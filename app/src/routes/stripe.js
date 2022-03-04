@@ -1,3 +1,4 @@
+const { create } = require('domain');
 const express = require('express');
 const { status } = require('express/lib/response');
 const { URLSearchParams } = require('url');
@@ -33,9 +34,9 @@ const register = (app) =>{
         cancel_url: process.env.APIM_DEVELOPER_PORTAL_URL,
         subscription_data: {
             metadata: {
-                [ApimUserIdKey]: userId,
-                [ApimProductIdKey]: productId,
-                [ApimSubscriptionNameKey]: subscriptionName
+                [userId]: userId,
+                [productName]: productId,
+                [subscriptionName]: subscriptionName
             }
         }
         });
@@ -44,6 +45,44 @@ const register = (app) =>{
 
 
     });
+    const endpointSecret = "whsec_948ed5c1da4dc18ff6bc289a845ba5cf100b564ac1185064c08c83b671d05b59";
+
+    stripe_routes.post('/webhook',express.raw({ type: 'application/json' }), function(req,res) {
+        const sig = req.headers['stripe-signature'];
+        const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        } catch (err) {
+            console.log(err.message)
+            res.status(400).send(`Webhook Error: ${err.message}`);
+            return;
+        }
+
+        // Handle the event
+        switch (event.type) {
+            case 'customer.subscription.created':
+                const createdSubscription = event.data.object;
+                console.log(createdSubscription)
+
+                const {userId,subscriptionName,productName} = createdSubscription.metadata
+
+                this.apim.
+                
+            // Then define and call a function to handle the event payment_intent.succeeded
+                break;
+            // ... handle other event types
+            default:
+            console.log(`Unhandled event type ${event.type}`);
+        }
+
+        // Return a 200 response to acknowledge receipt of the event
+        res.send();
+    })
+
+    app.use(stripe_routes);
 
 }
 
