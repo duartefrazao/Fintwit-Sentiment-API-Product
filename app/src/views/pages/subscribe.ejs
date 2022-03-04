@@ -1,0 +1,9 @@
+<h1>Subscribe to <%= productName %></h1>
+<form action="/checkout" method="get">
+    <label for="subscriptionName">Subscription name</label>
+    <input id="subscriptionName" name="subscriptionName" type="text"/>
+    <input type="submit" name="subscribe" value="Subscribe"/>
+    
+    <input type="hidden" name="userId" value="<%= userId %>"/>
+    <input type="hidden" name="productId" value="<%= productId %>"/>
+</form>

@@ -20,7 +20,8 @@
     "express": "^4.17.3",
     "express-ejs-layouts": "^2.5.1",
     "js-guid": "^1.0.0",
-    "ms-rest-azure": "^3.0.1"
+    "ms-rest-azure": "^3.0.1",
+    "stripe": "^8.207.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",

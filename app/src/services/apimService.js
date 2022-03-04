@@ -6,12 +6,23 @@ const { ClientSecretCredential, DefaultAzureCredential, UsernamePasswordCredenti
 const fetch = require('node-fetch')
 
 class ApimService {
-    apim_client ;
+    apim_client;
 
     subscription_id = process.env.SUBSCRIPTION_ID;
     resourceGroupName = process.env.RG_NAME;
     serviceName = process.env.SERVICE_NAME;
 
+    async get_user(userId){
+        await this.initialize();
+
+        return await this.apim_client.user.get(this.resourceGroupName,this.serviceName,userId)
+    }
+
+    async get_product(productId){
+        await this.initialize()
+
+        return await this.apim_client.product.get(this.resourceGroupName,this.serviceName,productId)
+    }
     async signup(email,password,firstName, lastName){
 
         await this.initialize();
