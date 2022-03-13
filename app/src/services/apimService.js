@@ -6,7 +6,7 @@ const { ClientSecretCredential, DefaultAzureCredential, UsernamePasswordCredenti
 const fetch = require('node-fetch')
 
 class ApimService {
-    apim_client;
+    apim_client ;
 
     subscription_id = process.env.SUBSCRIPTION_ID;
     resourceGroupName = process.env.RG_NAME;
@@ -28,7 +28,7 @@ class ApimService {
         await this.initialize();
         
         
-        new_user = await this.apim_client.user.createOrUpdate(
+        const new_user = await this.apim_client.user.createOrUpdate(
             this.resourceGroupName,
             this.serviceName,
             Guid.newGuid().toString(),
@@ -51,7 +51,9 @@ class ApimService {
         const url = `${request.resource_url}/identity?api-version=2019-12-01`
         const response = await fetch(url, { method: "GET", headers: { Authorization: request.credentials } });
         const sas_token = response.headers.get("Ocp-Apim-Sas-Token");
-        const identity = await response.json();
+        
+        const identity = await response.json();   
+        
 
         
 
@@ -93,7 +95,24 @@ class ApimService {
             }
         )
 
-        return token.value
+        return token
+    }
+
+    async createSubscription(stripeSubscriptionId,userId, subscriptionName,productName){
+        await this.initialize()
+
+        return await this.apim_client.subscription.createOrUpdate(
+            this.resourceGroupName,
+            this.serviceName,
+            stripeSubscriptionId,
+            {
+                displayName:subscriptionName,
+                ownerId:`/users/${userId}`,
+                scope: `/products/${productName}`,
+                state:'active'
+            }
+        )
+
     }
 
     create_request(email,password){

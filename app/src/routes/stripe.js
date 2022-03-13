@@ -1,10 +1,11 @@
 const { create } = require('domain');
 const express = require('express');
 const { status } = require('express/lib/response');
+const { default: Stripe } = require('stripe');
 const { URLSearchParams } = require('url');
 const stripe_routes = express.Router();
 const ApimService = require('../services/apimService')
-
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 const register = (app) =>{
     const apim = new ApimService()
@@ -23,7 +24,7 @@ const register = (app) =>{
 
         const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
-        customer_email: userEmail,
+        customer_email: email,
         line_items: [
             {
             price: price,
@@ -33,10 +34,10 @@ const register = (app) =>{
         success_url: process.env.APIM_DEVELOPER_PORTAL_URL + "/apis",
         cancel_url: process.env.APIM_DEVELOPER_PORTAL_URL,
         subscription_data: {
-            metadata: {
-                [userId]: userId,
-                [productName]: productId,
-                [subscriptionName]: subscriptionName
+            'metadata': {
+                'userId': userId,
+                'productName': productId,
+                'subscriptionName': subscriptionName
             }
         }
         });
@@ -47,9 +48,9 @@ const register = (app) =>{
     });
     const endpointSecret = "whsec_948ed5c1da4dc18ff6bc289a845ba5cf100b564ac1185064c08c83b671d05b59";
 
-    stripe_routes.post('/webhook',express.raw({ type: 'application/json' }), function(req,res) {
+    stripe_routes.post('/webhook',express.raw({ type: 'application/json' }), async function(req,res) {
         const sig = req.headers['stripe-signature'];
-        const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+        
 
         let event;
 
@@ -66,14 +67,14 @@ const register = (app) =>{
             case 'customer.subscription.created':
                 const createdSubscription = event.data.object;
                 console.log(createdSubscription)
-
-                const {userId,subscriptionName,productName} = createdSubscription.metadata
-
-                this.apim.
+                const {userId} = createdSubscription.metadata
+                const {subscriptionName} = createdSubscription.metadata
+                const {productName} = createdSubscription.metadata
                 
-            // Then define and call a function to handle the event payment_intent.succeeded
+                const newSubscription = await apim.createSubscription(createdSubscription.id, userId,subscriptionName,productName)
+
                 break;
-            // ... handle other event types
+
             default:
             console.log(`Unhandled event type ${event.type}`);
         }

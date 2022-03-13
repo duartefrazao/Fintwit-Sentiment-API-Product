@@ -20,7 +20,7 @@ const register = (app) =>{
             new_user = await apim.signup(email, password, first_name,surname);
         }catch(error){
             //Error with body
-            console.log("TODO Error")
+            console.log(error)
         }
         
         identity = await apim.signin(email, password)
@@ -41,7 +41,13 @@ const register = (app) =>{
 
     apim_routes.post('/signin', async function(req, res) {
         
-        identity = await apim.signin(req.body.email, req.body.password)
+        try {
+            identity = await apim.signin(req.body.email, req.body.password)    
+        } catch (error) {
+            res.status(401).send("Unauthorized")
+            return
+        }
+        
         if(!identity.authenticated){
             console.log("TODO")
         }
@@ -53,7 +59,7 @@ const register = (app) =>{
         searchParams.append("returnUrl" ,"/");
 
         const redirectUrl = process.env.APIM_DEVELOPER_PORTAL_URL + "/signin-sso?" + searchParams.toString();
-        
+    
         res.redirect(redirectUrl);
             
         
@@ -72,7 +78,13 @@ const register = (app) =>{
             case "Subscribe":
                 const {productName} = await apim.get_product(req.query.productId)
                 res.render("pages/subscribe", {productId: req.query.productId,productName:productName,userId:req.query.userId})
-
+                break
+            case "SignIn":
+                res.render("pages/signin")
+                break
+            case "SignOut":
+                res.render("pages/index")
+                break
         }
             
 
