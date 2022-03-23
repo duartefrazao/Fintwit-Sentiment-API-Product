@@ -15,11 +15,9 @@ const register = (app) =>{
         productId = req.query.productId
         userId = req.query.userId
 
-        const {email} = await apim.get_user(userId)
-        
-        const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+        const {email} = await apim.getUser(userId)
 
-        const product = await apim.get_product(productId)
+        const product = await apim.getProduct(productId)
         const price = (await stripe.prices.list({product:product.name, active: true})).data[0].id
 
         const session = await stripe.checkout.sessions.create({
@@ -50,30 +48,40 @@ const register = (app) =>{
 
     stripe_routes.post('/webhook',express.raw({ type: 'application/json' }), async function(req,res) {
         const sig = req.headers['stripe-signature'];
-        
 
         let event;
 
         try {
-            event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+            event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET || endpointSecret);
         } catch (err) {
             console.log(err.message)
             res.status(400).send(`Webhook Error: ${err.message}`);
             return;
         }
-
+        console.log(2)
         // Handle the event
         switch (event.type) {
             case 'customer.subscription.created':
                 const createdSubscription = event.data.object;
-                console.log(createdSubscription)
+                //console.log(createdSubscription)
                 const {userId} = createdSubscription.metadata
                 const {subscriptionName} = createdSubscription.metadata
                 const {productName} = createdSubscription.metadata
                 
                 const newSubscription = await apim.createSubscription(createdSubscription.id, userId,subscriptionName,productName)
-
+                console.log(newSubscription)
                 break;
+            case 'customer.subscription.updated':
+            case 'customer.subscription.deleted':
+                const subscriptionToChange = event.data.object;
+
+                const status = subscriptionToChange.status
+
+                if(status == 'canceled' || status == 'unpaid'){
+                    result = await apim.deleteSubscription(subscriptionToChange.id)
+                }
+
+                break
 
             default:
             console.log(`Unhandled event type ${event.type}`);
@@ -81,7 +89,16 @@ const register = (app) =>{
 
         // Return a 200 response to acknowledge receipt of the event
         res.send();
+        //res.redirect(303, process.env.APIM_DEVELOPER_PORTAL_URL + '');
+
     })
+
+    stripe_routes.post('/unsubscribe', async function(req, res) {
+        
+        stripe.subscriptions.del(req.body.subscriptionId)
+        res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL + '/profile')
+        
+    });
 
     app.use(stripe_routes);
 

@@ -19,5 +19,6 @@ app.use(express.static(path.join(__dirname, "public")));
 //require('./routes/routes')(app)
 routes.register(app)
 
-app.listen(8080);
-console.log('Server is listening on port 8080');
+port = (process.env.PORT || 8000)
+app.listen(port);
+console.log('Server is listening on port ' + port);

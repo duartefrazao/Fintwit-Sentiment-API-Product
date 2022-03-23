@@ -1,0 +1,5 @@
+<h1>Unsubscribe to <%= productName %></h1>
+<form action="/unsubscribe" method="post">
+    <button type="submit" class="btn btn-primary">Unsubscribe API</button>
+    <input type="hidden" name="subscriptionId" value="<%= subscriptionId %>"/>
+</form>

@@ -6,9 +6,7 @@ const register = (app) => {
     });
 
     stripe_routes.register(app)
-    apim_routes.register(app)
-    //app.use('/auth', auth_routes)
-    
+    apim_routes.register(app)    
   };
 
 module.exports = {register}

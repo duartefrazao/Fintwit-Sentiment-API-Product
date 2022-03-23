@@ -1,5 +1,13 @@
-<h1>Sign In</h1>
-<form action="/signin" method="post">
+<h1>Sign Up</h1>
+<form action="/signup" method="post">
+    <div class="form-group">
+        <label for="name">First Name</label>
+        <input type="text" class="form-control"  name="name" aria-describedby="name" >
+    </div>
+    <div class="form-group">
+        <label for="surname">Last Name</label>
+        <input type="text" class="form-control"  name="surname" aria-describedby="surname" >
+    </div>
     <div class="form-group">
         <label for="email">Email</label>
         <input type="email" class="form-control" name="email" aria-describedby="email" >
@@ -8,9 +16,10 @@
         <label for="password">Password</label>
         <input type="password" class="form-control" name="password" >
     </div>
-    <button type="submit" class="btn btn-primary">Sign In</button>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
     <input type="hidden" name="returnUrl" value="<%= returnUrl %>"/>
 </form>
+
 <% if(errorMessage != undefined){ %>
     <div class="bot-alert alert alert-danger" role="alert">
         <%= errorMessage %>

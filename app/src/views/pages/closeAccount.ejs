@@ -1,0 +1,22 @@
+<h1>Delete Account</h1> 
+
+<p>This action is irreversible and will delete any subscriptions currently active.</p>
+
+<form method="post" action="/closeAccount" >
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" required class="form-control" name="email" >
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" required class="form-control" name="password" >
+    </div>
+    <button type="submit" class="btn btn-primary">Delete account</button>
+    <input type="hidden" name="userId" value="<%= userId %>"/>
+  </form>
+ 
+  <% if(errorMessage != undefined){ %>
+    <div class="bot-alert alert alert-danger" role="alert">
+        <%= errorMessage %>
+    </div>
+ <% } %>

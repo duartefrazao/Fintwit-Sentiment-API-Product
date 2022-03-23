@@ -1,34 +1,36 @@
-const msRestNodeAuth = require('@azure/ms-rest-nodeauth');
+//const {} = require('@azure/ms-rest-nodeauth');
 //import * as msRestNodeAuth from '@azure/ms-rest-nodeauth';
-const {ApiManagementClient} = require('@azure/arm-apimanagement');
+const {ApiManagementClient, UserCreateParameters} = require('@azure/arm-apimanagement');
 const {Guid} = require('js-guid');
-const { ClientSecretCredential, DefaultAzureCredential, UsernamePasswordCredential } = require("@azure/identity");
+const { ClientSecretCredential, DefaultAzureCredential} = require("@azure/identity");
+
+const {SecretClient} = require('@azure/keyvault-secrets')
+
 const fetch = require('node-fetch')
 
 class ApimService {
-    apim_client ;
-
-    subscription_id = process.env.SUBSCRIPTION_ID;
+    apimClient //= new ApiManagementClient();
+    subscriptionId = process.env.SUBSCRIPTION_ID;
     resourceGroupName = process.env.RG_NAME;
     serviceName = process.env.SERVICE_NAME;
 
-    async get_user(userId){
-        await this.initialize();
+    async getUser(userId){
+        await this.init();
 
-        return await this.apim_client.user.get(this.resourceGroupName,this.serviceName,userId)
+        return await this.apimClient.user.get(this.resourceGroupName,this.serviceName,userId)
     }
 
-    async get_product(productId){
-        await this.initialize()
+    async getProduct(productId){
+        await this.init()
 
-        return await this.apim_client.product.get(this.resourceGroupName,this.serviceName,productId)
+        return await this.apimClient.product.get(this.resourceGroupName,this.serviceName,productId)
     }
     async signup(email,password,firstName, lastName){
 
-        await this.initialize();
+        await this.init();
         
         
-        const new_user = await this.apim_client.user.createOrUpdate(
+        const newUser = await this.apimClient.user.createOrUpdate(
             this.resourceGroupName,
             this.serviceName,
             Guid.newGuid().toString(),
@@ -39,58 +41,62 @@ class ApimService {
                 password
             }
             );
-        return 
+        return newUser
     }
     
     async signin(email,password){
-        await this.initialize();
-        
-        
-        const request = this.create_request(email,password)
+        await this.init();
 
-        const url = `${request.resource_url}/identity?api-version=2019-12-01`
+        var request;
+        try{
+            request = this.createRequest(email,password)
+        }catch(error){
+            console.log(request)
+        }
+
+        const url = `${request.resourceUrl}/identity?api-version=2019-12-01`
         const response = await fetch(url, { method: "GET", headers: { Authorization: request.credentials } });
-        const sas_token = response.headers.get("Ocp-Apim-Sas-Token");
+        if(response.status == 401){
+            return {authenticated:false}
+        }
+
+        const token = response.headers.get("Ocp-Apim-Sas-Token");
         
         const identity = await response.json();   
         
-
-        
-
         return {
             authenticated:true,
-            token: sas_token,
+            token: token,
             id: identity.id
         }
 
-
     }
 
-    async initialize() {
-        if (!this.apim_client) {
+    async init() {
+        if (!this.apimClient) {
             const credentials = new ClientSecretCredential(
                 process.env.AZURE_AD_SP_TENANT_ID,
                 process.env.AZURE_AD_SP_APP_ID, 
                 process.env.AZURE_AD_SP_PASSWORD
                 );
 
-            this.apim_client = new ApiManagementClient(credentials, this.subscription_id)
+            this.apimClient = new ApiManagementClient(credentials, this.subscriptionId)
         }
     }
 
-    async get_sas_token(id){
-        await this.initialize()
+    async getToken(id){
+        await this.init()
 
-        const days_to_expire = 1
-        const token_expiration = new Date()
-        token_expiration.setDate(token_expiration.getDate() + days_to_expire)
+        const daysToExpire = 1
+        const tokenExpiration = new Date()
+        tokenExpiration.setDate(tokenExpiration.getDate() + daysToExpire)
 
-        const token = await this.apim_client.user.getSharedAccessToken(
+        const token = await this.apimClient.user.getSharedAccessToken(
             process.env.RG_NAME,
             process.env.SERVICE_NAME,
             id,
             {
-                expiry:token_expiration,
+                expiry:tokenExpiration,
                 keyType:"primary"
             }
         )
@@ -99,9 +105,10 @@ class ApimService {
     }
 
     async createSubscription(stripeSubscriptionId,userId, subscriptionName,productName){
-        await this.initialize()
+        await this.init()
 
-        return await this.apim_client.subscription.createOrUpdate(
+        console.log(stripeSubscriptionId,userId,subscriptionName,productName)
+        return await this.apimClient.subscription.createOrUpdate(
             this.resourceGroupName,
             this.serviceName,
             stripeSubscriptionId,
@@ -115,14 +122,50 @@ class ApimService {
 
     }
 
-    create_request(email,password){
+    async deleteSubscription(subscriptionId){
+        await this.init()
+
+        return await this.apimClient.subscription.delete(this.resourceGroupName,this.serviceName,subscriptionId,'suspended');
+
+    }
+
+    async closeAccount(userId){
+        await this.init()
+       
+        return await this.apimClient.user.delete(this.resourceGroupName,this.serviceName,userId,"*")
+    }
+
+    async changePassword(userId,email,newPassword){
+        await this.init()
+
+        const profile = await this.apimClient.user.get(this.resourceGroupName,this.serviceName,userId)
+        return await this.apimClient.user.createOrUpdate(
+            this.resourceGroupName,
+            this.serviceName,
+            userId,
+            {
+                email,
+                password:newPassword,
+                firstName:profile.firstName,
+                lastName:profile.lastName
+            })
+    }
+    
+    async checkEmail(userId){
+        await this.init()
+
+
+        return await this.apimClient.user.get(this.resourceGroupName,this.serviceName,userId)
+    }
+
+    createRequest(email,password){
         const credentials = `Basic ${Buffer.from(`${email}:${password}`).toString('base64')}`;
         const url = new URL(process.env.APIM_MANAGEMENT_URL);
         const protocol = url.protocol;
         const hostname = url.hostname;
         const pathname = url.pathname;
-        const resource_url = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
-        return {credentials, resource_url}
+        const resourceUrl = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
+        return {credentials, resourceUrl}
     }
 }
 
