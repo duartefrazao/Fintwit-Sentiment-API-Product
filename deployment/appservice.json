@@ -18,8 +18,8 @@
         {
             "name": "[parameters('planName')]",
             "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2020-12-01",
             "kind": "linux",
+            "apiVersion": "2021-03-01",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "[parameters('appPlanSku')]",
