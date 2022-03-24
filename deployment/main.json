@@ -85,37 +85,24 @@
             }
         },
         {
-            "type": "Microsoft.ApiManagement/service",
-            "apiVersion": "2021-08-01",
-            "name": "[parameters('apimServiceName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "[parameters('apimSku')]",
-                "capacity": "[parameters('apimSkuCount')]"
-            },
+            "name": "apim",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
             "properties": {
-                "publisherEmail": "[parameters('apimPublisherEmail')]",
-                "publisherName": "[parameters('apimPublisherName')]"
-            },
-            "identity": {
-                "type": "SystemAssigned"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BVS5W2EJ4GH6PLY2J4YSGBMNQ"
+                },
+                "parameters": {
+                    "appName":{"value": "[parameters('appName')]"},
+                    "apimServiceName":{"value": "[parameters('apimServiceName')]"},
+                    "apimPublisherEmail":{"value": "[parameters('apimPublisherEmail')]"},
+                    "apimPublisherName":{"value": "[parameters('apimPublisherName')]"},
+                    "apimSku":{"value": "[parameters('apimSku')]"},
+                    "apimSkuCount":{"value": "[parameters('apimSkuCount')]"},
+                    "validationKey":{"value": "[parameters('validationKey')]"}
+                }
             }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/portalsettings",
-            "name": "[concat(parameters('apimServiceName'),'/delegation')]",
-            "apiVersion": "2021-08-01",
-            "properties": {
-                "subscriptions": {
-                    "enabled": true
-                },
-                "url": "[uri(concat('https://',reference(resourceId('Microsoft.Web/sites',parameters('appName')),'2020-12-01').defaultHostName),'apim-delegation')]",
-                "userRegistration": {
-                    "enabled": true
-                },
-                "validationKey": "[base64(parameters('validationKey'))]"
-            },
-            "dependsOn": ["[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]"]
         }
     ],
     "outputs": {}

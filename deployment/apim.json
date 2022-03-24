@@ -1,0 +1,91 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "type": "string"
+        },
+        "apimServiceName": {
+            "type": "string"
+        },
+        "apimPublisherEmail": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The email address of the owner of the service"
+            }
+        },
+        "apimPublisherName": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The name of the owner of the service"
+            }
+        },
+        "apimSku": {
+            "type": "string",
+            "allowedValues": [
+                "Developer",
+                "Standard",
+                "Premium"
+            ],
+            "metadata": {
+                "description": "The pricing tier of this API Management service"
+            }
+        },
+        "apimSkuCount": {
+            "type": "int",
+            "allowedValues": [
+                1,
+                2
+            ],
+            "metadata": {
+                "description": "The instance size of this API Management service."
+            }
+        },
+        "validationKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Delegation requests from APIM to Delegation app (Set for production)"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2021-08-01",
+            "name": "[parameters('apimServiceName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('apimSku')]",
+                "capacity": "[parameters('apimSkuCount')]"
+            },
+            "properties": {
+                "publisherEmail": "[parameters('apimPublisherEmail')]",
+                "publisherName": "[parameters('apimPublisherName')]"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "name": "[concat(parameters('apimServiceName'),'/delegation')]",
+            "apiVersion": "2021-08-01",
+            "properties": {
+                "subscriptions": {
+                    "enabled": true
+                },
+                "url": "[uri(concat('https://',reference(resourceId('Microsoft.Web/sites',parameters('appName')),'2020-12-01').defaultHostName),'apim-delegation')]",
+                "userRegistration": {
+                    "enabled": true
+                },
+                "validationKey": "[base64(parameters('validationKey'))]"
+            },
+            "dependsOn": ["[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]"]
+        }
+    ],
+    "outputs": {}
+}
