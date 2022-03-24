@@ -4,7 +4,7 @@ const { ClientSecretCredential } = require('@azure/identity');
 const axios = require('node-fetch');
 
 class ApimService {
-  apimClient// = new ApiManagementClient();
+  apimClient //= new ApiManagementClient();
 
   subscriptionId = process.env.SUBSCRIPTION_ID;
 
@@ -107,7 +107,6 @@ class ApimService {
   async createSubscription(stripeSubscriptionId, userId, subscriptionName, productName) {
     await this.init();
 
-    console.log(stripeSubscriptionId, userId, subscriptionName, productName);
     return this.apimClient.subscription.createOrUpdate(
       this.resourceGroupName,
       this.serviceName,
@@ -125,6 +124,12 @@ class ApimService {
     await this.init();
 
     return this.apimClient.subscription.delete(this.resourceGroupName, this.serviceName, subscriptionId, 'suspended');
+  }
+
+  async getSubscription(subscriptionId){
+    await this.init()
+
+    return await this.apimClient.subscription.get(this.resourceGroupName,this.serviceName,subscriptionId)
   }
 
   async closeAccount(userId) {

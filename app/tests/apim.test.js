@@ -63,3 +63,31 @@ test('Create subscription', async () => {
 
 })
 
+test('Delete subscription', async () => {
+    new_user = await apim.signup(testEmail,testPassword,testFirstName,testLastName)
+    
+    await apim.createSubscription(
+        testStripeSubscriptionId,
+        new_user.name,
+        testSubscriptionName,"developer")
+    
+    const new_subscription = await apim.getSubscription(testStripeSubscriptionId)
+    expect(new_subscription).toBeDefined()
+    expect(new_subscription.state).toBe("active")
+
+    await apim.deleteSubscription(testStripeSubscriptionId)
+    
+    let deleted = false
+    try{
+        await apim.getSubscription(testStripeSubscriptionId)
+    }catch(error){
+        deleted = true
+    }
+
+    expect(deleted).toBe(true)
+    
+    const result = await apim.closeAccount(new_user.name)
+
+})
+
+

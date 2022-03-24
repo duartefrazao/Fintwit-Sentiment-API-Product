@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appPlanSku": {
+            "type": "string",
+            "defaultValue": "F1"
+        },
+        "planName": {
+            "type": "string",
+            "defaultValue": "AppServicePlan"
+        },
+        "rgName": {
+            "type": "string",
+            "defaultValue": "api"
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            },
+            "defaultValue": "westeurope"
+        },
+        "appName": {
+            "type": "string",
+            "defaultValue": "App"
+        },
+        "planSkuCapacity": {
+            "type": "string",
+            "defaultValue": "1"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('rgName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2021-05-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "tags": {}
+        },
+        {
+            "name": "[parameters('planName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-12-01",
+            "kind": "linux",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('appPlanSku')]",
+                "capacity": "[parameters('planSkuCapacity')]"
+            },
+            "tags": {
+                "displayName": "[parameters('planName')]"
+            },
+            "properties": {
+                "name": "[parameters('planName')]",
+                "reserved": true
+            }
+        },
+        {
+            "name": "[parameters('appName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/appServicePlan1')]": "Resource",
+                "displayName": "[parameters('appName')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('appName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]"
+                }
+        }
+    ],
+    "outputs": {}
+}
