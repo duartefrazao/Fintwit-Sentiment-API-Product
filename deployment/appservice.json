@@ -3,16 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appPlanSku": {
-            "type": "string",
-            "defaultValue": "F1"
+            "type": "string"
         },
         "planName": {
-            "type": "string",
-            "defaultValue": "app-plan-api"
+            "type": "string"
         },
         "appName": {
-            "type": "string",
-            "defaultValue": "App"
+            "type": "string"
         }
     },
     "functions": [],

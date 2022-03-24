@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appPlanSku": {
+            "type": "string",
+            "defaultValue": "F1"
+        },
+        "planName": {
+            "type": "string",
+            "defaultValue": "app-plan-api"
+        },
+        "appName": {
+            "type": "string",
+            "defaultValue": "app-api-test1"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "appservice",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "relativePath": "appservice.json"
+                },
+                "parameters": {
+                    "appPlanSku":{"value": "[parameters('appPlanSku')]"},
+                    "planName":{"value": "[parameters('planName')]"},
+                    "appName":{"value": "[parameters('appName')]"}
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
