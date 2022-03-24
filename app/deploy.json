@@ -10,17 +10,6 @@
             "type": "string",
             "defaultValue": "app-plan-api"
         },
-        "rgName": {
-            "type": "string",
-            "defaultValue": "api"
-        },
-        "location": {
-            "type": "string",
-            "metadata": {
-                "description": "description"
-            },
-            "defaultValue": "westeurope"
-        },
         "appName": {
             "type": "string",
             "defaultValue": "App"
