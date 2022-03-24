@@ -1,12 +1,13 @@
-const apim_routes = require('./apim')
-const stripe_routes = require('./stripe')
+const apimRoutes = require('./apim');
+const stripeRoutes = require('./stripe');
+
 const register = (app) => {
-    app.get('/', function(req, res) {
-      res.render('pages/index');
-    });
+  app.get('/', (req, res) => {
+    res.render('pages/index');
+  });
 
-    stripe_routes.register(app)
-    apim_routes.register(app)    
-  };
+  stripeRoutes.register(app);
+  apimRoutes.register(app);
+};
 
-module.exports = {register}
+module.exports = { register };
