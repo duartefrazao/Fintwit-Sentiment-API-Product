@@ -8,11 +8,68 @@
         },
         "planName": {
             "type": "string",
-            "defaultValue": "app-plan-api"
+            "defaultValue": "app-plan-api-test1"
         },
         "appName": {
             "type": "string",
             "defaultValue": "app-api-test1"
+        },
+        "apimServiceName": {
+            "type": "string",
+            "defaultValue": "apim-api-test1"
+        },
+        "apimPublisherEmail": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The email address of the owner of the service"
+            },
+            "defaultValue":"duartemarquesmano@gmail.com"
+        },
+        "apimPublisherName": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The name of the owner of the service"
+            },
+            "defaultValue": "Api Publisher"
+        },
+        "apimSku": {
+            "type": "string",
+            "defaultValue": "Developer",
+            "allowedValues": [
+                "Developer",
+                "Standard",
+                "Premium"
+            ],
+            "metadata": {
+                "description": "The pricing tier of this API Management service"
+            }
+        },
+        "apimSkuCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "allowedValues": [
+                1,
+                2
+            ],
+            "metadata": {
+                "description": "The instance size of this API Management service."
+            }
+        },
+        "apiVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            },
+            "defaultValue": "2022-01-01"
+        },
+        "validationKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Delegation requests from APIM to Delegation app (Set for production)"
+            },
+            "defaultValue": "[newGuid()]"
         }
     },
     "functions": [],
@@ -25,7 +82,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "relativePath": "appservice.json"
+                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/appservice.json?token=GHSAT0AAAAAABQC22BVD3AVMRQH52LNVKHIYSF363A"
                 },
                 "parameters": {
                     "appPlanSku":{"value": "[parameters('appPlanSku')]"},
@@ -33,6 +90,39 @@
                     "appName":{"value": "[parameters('appName')]"}
                 }
             }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2021-08-01",
+            "name": "[parameters('apimServiceName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('apimSku')]",
+                "capacity": "[parameters('apimSkuCount')]"
+            },
+            "properties": {
+                "publisherEmail": "[parameters('apimPublisherEmail')]",
+                "publisherName": "[parameters('apimPublisherName')]"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "name": "[concat(parameters('apimServiceName'),'/delegation')]",
+            "apiVersion": "2021-02-01",
+            "properties": {
+                "subscriptions": {
+                    "enabled": true
+                },
+                "url": "[reference(resourceId('Microsoft.Web/sites',parameters('appName')),parameters('apiVersion')).defaultHostName]",
+                "userRegistration": {
+                    "enabled": true
+                },
+                "validationKey": "[base64(parameters('validationKey'))]"
+            },
+            "dependsOn": ["[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]"]
         }
     ],
     "outputs": {}
