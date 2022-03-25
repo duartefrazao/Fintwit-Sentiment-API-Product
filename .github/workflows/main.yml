@@ -10,10 +10,10 @@ jobs:
       
       - name: Azure login
         uses: azure/login@v1
-
-      - name: Update templates
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Update templates
         run: sh deployment/upload.sh
       -
         name: Set up QEMU
