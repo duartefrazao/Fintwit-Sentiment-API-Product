@@ -49,7 +49,7 @@
                 "description": "Delegation requests from APIM to Delegation app (Set for production)"
             }
         },
-        "policyAssignmentName": {
+        "policyName": {
             "type": "string",
             "metadata": {
                 "description": "Global policy assignment, traffic to api only from trusted sources"
@@ -90,17 +90,21 @@
                 },
                 "validationKey": "[base64(parameters('validationKey'))]"
             },
-            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/policies",
-            "apiVersion": "2021-08-01",
-            "name": "policy",
-            "properties": {
-                "format": "string",
-                "value": "string"
-            }
+            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ],
+            "resources": [
+                {
+                    "type": "Microsoft.ApiManagement/service/policies",
+                    "apiVersion": "2021-08-01",
+                    "name": "[parameters('policyName')]",
+                    "properties": {
+                        "format": "xml-link",
+                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                    },
+                    "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
+                }
+            ]
         }
+
 
     ],
     "outputs": {}
