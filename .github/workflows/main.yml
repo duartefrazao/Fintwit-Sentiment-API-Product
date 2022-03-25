@@ -12,7 +12,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       - name: Update templates
         run: sh deployment/upload.sh
       -
@@ -28,33 +28,48 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push app docker container
         uses: docker/build-push-action@v2
         with:
           context: ./app
           push: true
           tags: duartefrazao/apim-test:latest
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        cd app
+        npm install
+    
+    - name: Run tests
+      run: npm run test
+    
+    - name: Run linter
+      run: npm run lint
+
 
   deploy:
     runs-on: ubuntu-latest
     steps:
 
-      # Checkout code
-    - uses: actions/checkout@main
+    - name: Checkout
+      uses: actions/checkout@main
 
-      # Log into Azure
-    - uses: azure/login@v1
+    - name: Azure login
+      uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy ARM template
-    - name: Run ARM deploy
+    - name: Run ARM deployment
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./deployment/main.json
         parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_SAS }}
-
-      # output containerName variable from template
-    - run: echo ${{ steps.deploy.outputs.containerName }}
