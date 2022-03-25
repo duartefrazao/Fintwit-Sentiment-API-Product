@@ -22,9 +22,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
-        storageSAS: ${{ secrets.STORAGE_SAS }}
-        storageContainerUrl: ${{ secrets.STORAGE_CONTAINER_URL }}
         template: ./deployment/main.json
+        parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_CONTAINER_URL }}
 
       # output containerName variable from template
     - run: echo ${{ steps.deploy.outputs.containerName }}
