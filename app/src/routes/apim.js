@@ -1,5 +1,6 @@
 const express = require('express');
-const { URLSearchParams } = require('url');  
+const { URLSearchParams } = require('url');
+
 const apimRoutes = express.Router();
 const ApimService = require('../services/apimService');
 
@@ -17,9 +18,9 @@ const register = (app) => {
       await apim.signup(email, password, firstName, surname);
     } catch (error) {
       const redirectParams = new URLSearchParams(returnUrl);
-      redirectParams.get("errorMessage")
-      redirectParams.set("errorMessage", error.details.details[0].message)
-      redirectParams.get("errorMessage")
+      redirectParams.get('errorMessage');
+      redirectParams.set('errorMessage', error.details.details[0].message);
+      redirectParams.get('errorMessage');
       res.redirect(redirectParams.toString());
       return;
     }
@@ -52,11 +53,11 @@ const register = (app) => {
     const identity = await apim.signin(email, password);
 
     if (!identity || !identity.authenticated) {
-      const redirectParams = new URLSearchParams(returnUrl.split("?")[1]);
-      redirectParams.set("errorMessage", identity.message)
-        console.log(identity.message)
-      res.redirect("/apim-delegation?" + redirectParams.toString());
-      return 
+      const redirectParams = new URLSearchParams(returnUrl.split('?')[1]);
+      redirectParams.set('errorMessage', identity.message);
+      console.log(identity.message);
+      res.redirect(`/apim-delegation?${redirectParams.toString()}`);
+      return;
     }
 
     const { value: token } = await apim.getToken(identity.id);
@@ -80,7 +81,7 @@ const register = (app) => {
       identity = await apim.signin(email, password);
     } catch (error) {
       res.status(401).send();
-      return 
+      return;
     }
 
     if (identity.authenticated) {
@@ -107,7 +108,7 @@ const register = (app) => {
       identity = await apim.signin(email, oldPassword);
     } catch (error) {
       res.status(401).send();
-      return 
+      return;
     }
 
     if (identity.authenticated) {
