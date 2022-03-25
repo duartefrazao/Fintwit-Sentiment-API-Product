@@ -129,7 +129,11 @@ class ApimService {
   async getSubscription(subscriptionId) {
     await this.init();
 
-    return this.apimClient.subscription.get(this.resourceGroupName, this.serviceName, subscriptionId);
+    return this.apimClient.subscription.get(
+      this.resourceGroupName,
+      this.serviceName,
+      subscriptionId,
+    );
   }
 
   async closeAccount(userId) {
