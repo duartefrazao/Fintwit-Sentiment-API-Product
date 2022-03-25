@@ -1,7 +1,5 @@
-on: 
-  push:
-    branches:
-      - "main"
+on: [push]
+
 name: Azure ARM
 jobs:
   build:
@@ -23,7 +21,7 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./deployment/main.json
-        parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_CONTAINER_URL }}
+        parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.storageSAS }}
 
       # output containerName variable from template
     - run: echo ${{ steps.deploy.outputs.containerName }}
