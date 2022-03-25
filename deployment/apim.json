@@ -25,7 +25,7 @@
         "apimSku": {
             "type": "string",
             "allowedValues": [
-                "Developer",
+                "developers",
                 "Standard",
                 "Premium"
             ],
@@ -100,20 +100,20 @@
                 {
                     "type": "groups",
                     "apiVersion": "2021-08-01",
-                    "name": "guest",
+                    "name": "guests",
                     "properties": {
-                        "description": "guest",
-                        "displayName": "guest"
+                        "description": "guests",
+                        "displayName": "guests"
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
                 {
                     "type": "groups",
                     "apiVersion": "2021-08-01",
-                    "name": "developer",
+                    "name": "developers",
                     "properties": {
-                        "description": "developer",
-                        "displayName": "developer"
+                        "description": "developers",
+                        "displayName": "developers"
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
@@ -134,7 +134,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "guest",
+                            "name": "guests",
                             "dependsOn": [
                                 "payg"
                             ]
@@ -143,7 +143,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "developer",
+                            "name": "developers",
                             "dependsOn": [
                                 "payg"
                             ]
@@ -170,7 +170,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "guest",
+                            "name": "guests",
                             "dependsOn": [
                                 "free"
                             ]
@@ -179,7 +179,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "developer",
+                            "name": "developers",
                             "dependsOn": [
                                 "free"
                             ]
@@ -205,7 +205,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "guest",
+                            "name": "guests",
                             "dependsOn": [
                                 "basic"
                             ]
@@ -214,7 +214,7 @@
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
-                            "name": "developer",
+                            "name": "developers",
                             "dependsOn": [
                                 "basic"
                             ]
