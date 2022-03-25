@@ -25,7 +25,7 @@
         "apimSku": {
             "type": "string",
             "allowedValues": [
-                "developers",
+                "Developer",
                 "Standard",
                 "Premium"
             ],
@@ -96,26 +96,6 @@
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
 
-                },
-                {
-                    "type": "groups",
-                    "apiVersion": "2021-08-01",
-                    "name": "guests",
-                    "properties": {
-                        "description": "guests",
-                        "displayName": "guests"
-                    },
-                    "dependsOn": [ "[parameters('apimServiceName')]" ]
-                },
-                {
-                    "type": "groups",
-                    "apiVersion": "2021-08-01",
-                    "name": "developers",
-                    "properties": {
-                        "description": "developers",
-                        "displayName": "developers"
-                    },
-                    "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
                 {
                     "type": "products",
