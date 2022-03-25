@@ -2,78 +2,23 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appPlanSku": {
+        "storageSAS": {
             "type": "string",
-            "defaultValue": "F1"
-        },
-        "planName": {
-            "type": "string",
-            "defaultValue": "app-plan-api-test1"
-        },
-        "appName": {
-            "type": "string",
-            "defaultValue": "app-api-test1"
-        },
-        "apimServiceName": {
-            "type": "string",
-            "defaultValue": "apim-api-test1"
-        },
-        "apimPublisherEmail": {
-            "type": "string",
-            "minLength": 1,
             "metadata": {
-                "description": "The email address of the owner of the service"
-            },
-            "defaultValue":"duartemarquesmano@gmail.com"
-        },
-        "apimPublisherName": {
-            "type": "string",
-            "minLength": 1,
-            "metadata": {
-                "description": "The name of the owner of the service"
-            },
-            "defaultValue": "Api Publisher"
-        },
-        "apimSku": {
-            "type": "string",
-            "defaultValue": "Developer",
-            "allowedValues": [
-                "Developer",
-                "Standard",
-                "Premium"
-            ],
-            "metadata": {
-                "description": "The pricing tier of this API Management service"
+                "description": "description"
             }
         },
-        "apimSkuCount": {
-            "type": "int",
-            "defaultValue": 1,
-            "allowedValues": [
-                1,
-                2
-            ],
+        "storageContainerUrl": {
+            "type": "string",
             "metadata": {
-                "description": "The instance size of this API Management service."
+                "description": "URL of storage account container"
             }
-        },
-        "validationKey": {
-            "type": "string",
-            "metadata": {
-                "description": "Delegation requests from APIM to Delegation app (Set for production)"
-            },
-            "defaultValue": "[newGuid()]"
-        },
-        "policyName": {
-            "type": "string",
-            "metadata": {
-                "description": "Global policy assignment, traffic to api only from trusted sources"
-            },
-            "defaultValue": "global"
         }
     },
     "functions": [],
-    "variables": {},
+    "variables": {
+
+    },
     "resources": [
         {
             "name": "appservice",
@@ -82,12 +27,10 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/appservice.json?token=GHSAT0AAAAAABQC22BVD3AVMRQH52LNVKHIYSF363A"
+                    "uri": "[concat(parameters('storageContainerUrl'),'appservice.json',parameters('storageSAS'))]"
                 },
-                "parameters": {
-                    "appPlanSku":{"value": "[parameters('appPlanSku')]"},
-                    "planName":{"value": "[parameters('planName')]"},
-                    "appName":{"value": "[parameters('appName')]"}
+                "parametersLink": {
+                    "uri": "[concat(parameters('storageContainerUrl'),'appservice.parameters.json',parameters('storageSAS'))]"
                 }
             }
         },
@@ -98,18 +41,10 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    //"uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BUQYO246B52GPV7JJMYSGBREA"
-                    "uri": "https://apideployments.blob.core.windows.net/templates/apim.json"
+                    "uri": "[concat(parameters('storageContainerUrl'),'apim.json',parameters('storageSAS'))]"
                 },
-                "parameters": {
-                    "appName":{"value": "[parameters('appName')]"},
-                    "apimServiceName":{"value": "[parameters('apimServiceName')]"},
-                    "apimPublisherEmail":{"value": "[parameters('apimPublisherEmail')]"},
-                    "apimPublisherName":{"value": "[parameters('apimPublisherName')]"},
-                    "apimSku":{"value": "[parameters('apimSku')]"},
-                    "apimSkuCount":{"value": "[parameters('apimSkuCount')]"},
-                    "validationKey":{"value": "[parameters('validationKey')]"},
-                    "policyName":{"value": "[parameters('policyName')]"}
+                "parametersLink": {
+                    "uri": "[concat(parameters('storageContainerUrl'),'apim.parameters.json',parameters('storageSAS'))]"
                 }
             }
         }

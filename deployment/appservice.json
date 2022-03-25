@@ -10,6 +10,56 @@
         },
         "appName": {
             "type": "string"
+        },
+        "subscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "SubscriptionId"
+            }
+        },
+        "servicePrincipalAppId": {
+            "type": "string",
+            "metadata": {
+                "description": "SP App Id"
+            }
+        },
+        "servicePrincipalPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "SP App Password"
+            }
+        },
+        "servicePrincipalTenantId": {
+            "type": "string",
+            "metadata": {
+                "description": "SP Tenant Id"
+            }
+        },
+        "stripePublicKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Stripe Public Key"
+            }
+        },
+        "stripePrivateKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Stripe Private Key"
+            }
+
+        },
+        "stripeWebhookSecret": {
+            "type": "string",
+            "metadata": {
+                "description": "Stripe Webhook Secret"
+            }
+
+        },
+        "apimServiceName": {
+            "type": "string",
+            "metadata": {
+                "description": "APIM service name"
+            }
         }
     },
     "functions": [],
@@ -47,8 +97,35 @@
             ],
             "properties": {
                 "name": "[parameters('appName')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]"
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]",
+                "siteConfig": {
+                    "linuxFxVersion": "[concat('DOCKER|','duartefrazao/apim-test:latest')]",
+                    "alwaysOn": true
+
                 }
+            },
+            "resources": [
+                {
+                    "type": "config",
+                    "apiVersion": "2021-03-01",
+                    "name": "appsettings",
+                    "properties": {
+                        "NODE_ENV":"production",
+                        "SUBSCRIPTION_ID":"[parameters('subscriptionId')]",
+                        "RG_NAME":"[resourceGroup().name]",
+                        "SERVICE_NAME":"[parameters('apimServiceName')]",
+                        "AZURE_AD_SP_APP_ID":"[parameters('servicePrincipalAppId')]",
+                        "AZURE_AD_SP_PASSWORD":"[parameters('servicePrincipalPassword')]",
+                        "AZURE_AD_SP_TENANT_ID":"[parameters('servicePrincipalTenantId')]",
+                        "APIM_MANAGEMENT_URL":"[concat('https://',parameters('apimServiceName'),'.management.azure-api.net')]",
+                        "APIM_DEVELOPER_PORTAL_URL":"[concat('https://',parameters('apimServiceName'),'.developer.azure-api.net')]",
+                        "STRIPE_PUBLIC_KEY":"[parameters('stripePublicKey')]",
+                        "STRIPE_PRIVATE_KEY":"[parameters('stripePrivateKey')]",
+                        "STRIPE_WEBHOOK_SECRET":"[parameters('stripeWebhookSecret')]"
+                    },
+                    "dependsOn": ["[parameters('appName')]"]
+                }
+            ]
         }
     ],
     "outputs": {}

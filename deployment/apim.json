@@ -48,12 +48,6 @@
             "metadata": {
                 "description": "Delegation requests from APIM to Delegation app (Set for production)"
             }
-        },
-        "policyName": {
-            "type": "string",
-            "metadata": {
-                "description": "Global policy assignment, traffic to api only from trusted sources"
-            }
         }
     },
     "functions": [],
