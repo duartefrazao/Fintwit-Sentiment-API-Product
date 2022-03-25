@@ -48,10 +48,14 @@ jobs:
         npm install
     
     - name: Run tests
-      run: npm run test
+      run: |
+        cd app
+        npm run test
     
     - name: Run linter
-      run: npm run lint
+      run: |
+        cd app
+        npm run lint
 
 
   deploy:
