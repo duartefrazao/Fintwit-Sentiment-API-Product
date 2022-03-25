@@ -4,7 +4,7 @@ const { ClientSecretCredential } = require('@azure/identity');
 const axios = require('node-fetch');
 
 class ApimService {
-  apimClient //= new ApiManagementClient();
+  apimClient; //= new ApiManagementClient();
 
   subscriptionId = process.env.SUBSCRIPTION_ID;
 
@@ -55,10 +55,10 @@ class ApimService {
     const response = await axios(url, { method: 'GET', headers: { Authorization: request.credentials } });
 
     if (response.status === 401) {
-      return { authenticated: false, message:'Wrong email or password.'};
+      return { authenticated: false, message: 'Wrong email or password.' };
     }
     if (response.status === 429) {
-        return { authenticated: false, message:'Too many tries, try again later.'};
+      return { authenticated: false, message: 'Too many tries, try again later.' };
     }
 
     const token = response.headers.get('Ocp-Apim-Sas-Token');
@@ -126,16 +126,20 @@ class ApimService {
     return this.apimClient.subscription.delete(this.resourceGroupName, this.serviceName, subscriptionId, 'suspended');
   }
 
-  async getSubscription(subscriptionId){
-    await this.init()
+  async getSubscription(subscriptionId) {
+    await this.init();
 
-    return await this.apimClient.subscription.get(this.resourceGroupName,this.serviceName,subscriptionId)
+    return this.apimClient.subscription.get(
+      this.resourceGroupName,
+      this.serviceName,
+      subscriptionId,
+    );
   }
 
   async closeAccount(userId) {
     await this.init();
 
-    return this.apimClient.user.delete(this.resourceGroupName, this.serviceName, userId, '*',{deleteSubscriptions:true});
+    return this.apimClient.user.delete(this.resourceGroupName, this.serviceName, userId, '*', { deleteSubscriptions: true });
   }
 
   async changePassword(userId, email, newPassword) {
@@ -160,14 +164,11 @@ class ApimService {
     );
   }
 
-
   async checkEmail(userId) {
     await this.init();
 
     return this.apimClient.user.get(this.resourceGroupName, this.serviceName, userId);
   }
-
-
 
   createRequest = (email, password) => {
     const credentials = `Basic ${Buffer.from(`${email}:${password}`).toString('base64')}`;
