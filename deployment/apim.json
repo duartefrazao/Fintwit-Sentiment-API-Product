@@ -74,87 +74,85 @@
             },
             "identity": {
                 "type": "SystemAssigned"
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/portalsettings",
-            "name": "[concat(parameters('apimServiceName'),'/delegation')]",
-            "apiVersion": "2021-08-01",
-            "properties": {
-                "subscriptions": {
-                    "enabled": true
-                },
-                "url": "[uri(concat('https://',reference(resourceId('Microsoft.Web/sites',parameters('appName')),'2020-12-01').defaultHostName),'apim-delegation')]",
-                "userRegistration": {
-                    "enabled": true
-                },
-                "validationKey": "[base64(parameters('validationKey'))]"
             },
-            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/policies",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/',parameters('policyName'))]",
-            "properties": {
-                "format": "xml-link",
-                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
-            },
-            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/products/groups",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/guest')]",
-            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/products/groups",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/developer')]",
-            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/products",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/payg')]",
-            "properties": {
-                "approvalRequired": false,
-                "description": "Pay as you go subscription",
-                "displayName": "Pay as you go",
-                "state": "published",
-                "subscriptionRequired": true,
-                "terms": "Terms of usage TODO"
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/products",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/free')]",
-            "properties": {
-                "approvalRequired": false,
-                "description": "Free subscription",
-                "displayName": "Free",
-                "state": "notPublished",
-                "subscriptionRequired": true,
-                "terms": "Terms of usage TODO",
-                "subscriptionsLimit": 1
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/products",
-            "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('apimServiceName'),'/basic')]",
-            "properties": {
-                "approvalRequired": false,
-                "description": "A standard subscription with a set monthly quota of X calls",
-                "displayName": "Basic subscription",
-                "state": "published",
-                "subscriptionRequired": true,
-                "terms": "Terms of usage TODO"
-            }
+            "resources": [
+                {
+                    "type": "Microsoft.ApiManagement/service/portalsettings",
+                    "name": "[concat(parameters('apimServiceName'),'/delegation')]",
+                    "apiVersion": "2021-08-01",
+                    "properties": {
+                        "subscriptions": {
+                            "enabled": true
+                        },
+                        "url": "[uri(concat('https://',reference(resourceId('Microsoft.Web/sites',parameters('appName')),'2020-12-01').defaultHostName),'apim-delegation')]",
+                        "userRegistration": {
+                            "enabled": true
+                        },
+                        "validationKey": "[base64(parameters('validationKey'))]"
+                    },
+                    "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/policies",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/',parameters('policyName'))]",
+                    "properties": {
+                        "format": "xml-link",
+                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                    }
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/products/groups",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/guest')]"
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/products/groups",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/developer')]"
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/products",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/payg')]",
+                    "properties": {
+                        "approvalRequired": false,
+                        "description": "Pay as you go subscription",
+                        "displayName": "Pay as you go",
+                        "state": "published",
+                        "subscriptionRequired": true,
+                        "terms": "Terms of usage TODO"
+                    }
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/products",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/free')]",
+                    "properties": {
+                        "approvalRequired": false,
+                        "description": "Free subscription",
+                        "displayName": "Free",
+                        "state": "notPublished",
+                        "subscriptionRequired": true,
+                        "terms": "Terms of usage TODO",
+                        "subscriptionsLimit": 1
+                    }
+                },
+                {
+                    "type": "Microsoft.ApiManagement/service/products",
+                    "apiVersion": "2021-08-01",
+                    "name": "[concat(parameters('apimServiceName'),'/basic')]",
+                    "properties": {
+                        "approvalRequired": false,
+                        "description": "A standard subscription with a set monthly quota of X calls",
+                        "displayName": "Basic subscription",
+                        "state": "published",
+                        "subscriptionRequired": true,
+                        "terms": "Terms of usage TODO"
+                    }
+                }
+            ]
         }
-
     ],
     "outputs": {}
 }
