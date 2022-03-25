@@ -105,14 +105,54 @@
         {
             "type": "Microsoft.ApiManagement/service/products/groups",
             "apiVersion": "2021-08-01",
-            "name": "guest",
-            "dependsOn": ["[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]"]
+            "name": "[concat(parameters('apimServiceName'),'/guest')]",
+            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
         },
         {
             "type": "Microsoft.ApiManagement/service/products/groups",
             "apiVersion": "2021-08-01",
-            "name": "dev",
-            "dependsOn": ["[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]"]
+            "name": "[concat(parameters('apimServiceName'),'/developer')]",
+            "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-08-01",
+            "name": "[concat(parameters('apimServiceName'),'/payg')]",
+            "properties": {
+                "approvalRequired": false,
+                "description": "Pay as you go subscription",
+                "displayName": "Pay as you go",
+                "state": "published",
+                "subscriptionRequired": true,
+                "terms": "Terms of usage TODO"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-08-01",
+            "name": "[concat(parameters('apimServiceName'),'/free')]",
+            "properties": {
+                "approvalRequired": false,
+                "description": "Free subscription",
+                "displayName": "Free",
+                "state": "notPublished",
+                "subscriptionRequired": true,
+                "terms": "Terms of usage TODO",
+                "subscriptionsLimit": 1
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-08-01",
+            "name": "[concat(parameters('apimServiceName'),'/basic')]",
+            "properties": {
+                "approvalRequired": false,
+                "description": "A standard subscription with a set monthly quota of X calls",
+                "displayName": "Basic subscription",
+                "state": "published",
+                "subscriptionRequired": true,
+                "terms": "Terms of usage TODO"
+            }
         }
 
     ],
