@@ -111,7 +111,7 @@
                         "description": "guest",
                         "displayName": "guest"
                     },
-                    "dependsOn": ["[parameters('apimServiceName')]"]
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
                 {
                     "type": "groups",
@@ -121,7 +121,7 @@
                         "description": "developer",
                         "displayName": "developer"
                     },
-                    "dependsOn": ["[parameters('apimServiceName')]"]
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
                 {
                     "type": "products",
@@ -228,6 +228,17 @@
                         }
                     ]
 
+                },
+                {
+                    "type": "namedValues",
+                    "apiVersion": "2021-08-01",
+                    "name": "delegationAppServiceName",
+                    "properties": {
+                        "displayName": "delegationAppServiceName",
+                        "secret": false,
+                        "value": "[parameters('appName')]"
+                    },
+                    "dependsOn": ["[parameters('apimServiceName')]"]
                 }
             ]
         }
