@@ -98,7 +98,8 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BUQYO246B52GPV7JJMYSGBREA"
+                    //"uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BUQYO246B52GPV7JJMYSGBREA"
+                    "uri": "https://apideployments.blob.core.windows.net/templates/apim.json"
                 },
                 "parameters": {
                     "appName":{"value": "[parameters('appName')]"},

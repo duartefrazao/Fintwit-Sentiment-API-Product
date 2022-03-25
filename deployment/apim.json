@@ -77,8 +77,8 @@
             },
             "resources": [
                 {
-                    "type": "Microsoft.ApiManagement/service/portalsettings",
-                    "name": "[concat(parameters('apimServiceName'),'/delegation')]",
+                    "type": "portalsettings",
+                    "name": "delegation",
                     "apiVersion": "2021-08-01",
                     "properties": {
                         "subscriptions": {
@@ -90,31 +90,43 @@
                         },
                         "validationKey": "[base64(parameters('validationKey'))]"
                     },
-                    "dependsOn": [ "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]" ]
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/policies",
+                    "type": "policies",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/',parameters('policyName'))]",
+                    "name": "policy",
                     "properties": {
                         "format": "xml-link",
                         "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
-                    }
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/products/groups",
+                    "type": "groups",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/guest')]"
+                    "name": "guest",
+                    "properties": {
+                        "description": "guest",
+                        "displayName": "guest"
+                    },
+                    "dependsOn": ["[parameters('apimServiceName')]"]
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/products/groups",
+                    "type": "groups",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/developer')]"
+                    "name": "developer",
+                    "properties": {
+                        "description": "developer",
+                        "displayName": "developer"
+                    },
+                    "dependsOn": ["[parameters('apimServiceName')]"]
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/products",
+                    "type": "products",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/payg')]",
+                    "name": "payg",
                     "properties": {
                         "approvalRequired": false,
                         "description": "Pay as you go subscription",
@@ -122,12 +134,34 @@
                         "state": "published",
                         "subscriptionRequired": true,
                         "terms": "Terms of usage TODO"
-                    }
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "resources": [
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "guest",
+                            "dependsOn": [
+                                "payg"
+                            ]
+
+                        },
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "developer",
+                            "dependsOn": [
+                                "payg"
+                            ]
+
+                        }
+                    ]
+
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/products",
+                    "type": "products",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/free')]",
+                    "name": "free",
                     "properties": {
                         "approvalRequired": false,
                         "description": "Free subscription",
@@ -136,20 +170,64 @@
                         "subscriptionRequired": true,
                         "terms": "Terms of usage TODO",
                         "subscriptionsLimit": 1
-                    }
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "resources": [
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "guest",
+                            "dependsOn": [
+                                "free"
+                            ]
+
+                        },
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "developer",
+                            "dependsOn": [
+                                "free"
+                            ]
+
+                        }
+                    ]
+
                 },
                 {
-                    "type": "Microsoft.ApiManagement/service/products",
+                    "type": "products",
                     "apiVersion": "2021-08-01",
-                    "name": "[concat(parameters('apimServiceName'),'/basic')]",
+                    "name": "basic",
                     "properties": {
                         "approvalRequired": false,
                         "description": "A standard subscription with a set monthly quota of X calls",
-                        "displayName": "Basic subscription",
+                        "displayName": "Basic",
                         "state": "published",
                         "subscriptionRequired": true,
                         "terms": "Terms of usage TODO"
-                    }
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "resources": [
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "guest",
+                            "dependsOn": [
+                                "basic"
+                            ]
+
+                        },
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "developer",
+                            "dependsOn": [
+                                "basic"
+                            ]
+
+                        }
+                    ]
+
                 }
             ]
         }
