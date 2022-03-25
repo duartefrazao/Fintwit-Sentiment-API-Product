@@ -63,6 +63,13 @@
                 "description": "Delegation requests from APIM to Delegation app (Set for production)"
             },
             "defaultValue": "[newGuid()]"
+        },
+        "policyName": {
+            "type": "string",
+            "metadata": {
+                "description": "Global policy assignment, traffic to api only from trusted sources"
+            },
+            "defaultValue": "global"
         }
     },
     "functions": [],
@@ -91,7 +98,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BVS5W2EJ4GH6PLY2J4YSGBMNQ"
+                    "uri": "https://raw.githubusercontent.com/duartefrazao/api/main/deployment/apim.json?token=GHSAT0AAAAAABQC22BUQYO246B52GPV7JJMYSGBREA"
                 },
                 "parameters": {
                     "appName":{"value": "[parameters('appName')]"},
@@ -100,7 +107,8 @@
                     "apimPublisherName":{"value": "[parameters('apimPublisherName')]"},
                     "apimSku":{"value": "[parameters('apimSku')]"},
                     "apimSkuCount":{"value": "[parameters('apimSkuCount')]"},
-                    "validationKey":{"value": "[parameters('validationKey')]"}
+                    "validationKey":{"value": "[parameters('validationKey')]"},
+                    "policyName":{"value": "[parameters('policyName')]"}
                 }
             }
         }
