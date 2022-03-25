@@ -4,7 +4,7 @@ on:
       - "master"
 name: Azure ARM
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
 
@@ -22,6 +22,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
+        storageSAS: ${{ secrets.STORAGE_SAS }}
+        storageContainerUrl: ${{ secrets.STORAGE_CONTAINER_URL }}
         template: ./deployment/main.json
 
       # output containerName variable from template
