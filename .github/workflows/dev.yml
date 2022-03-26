@@ -75,7 +75,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd app
-        az storage blob download --account-name apideployments --container-name templates -f .env -n .env
+        az storage blob download --account-name apideployments --container-name templates-dev -f .env -n .env
         npm install jest
         npm install eslint
     
