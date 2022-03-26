@@ -3,7 +3,7 @@ on:
     branches:
       - "!main"
 
-name: Azure ARM
+name: IAC for dev
 jobs:
   build:
     runs-on: ubuntu-latest
