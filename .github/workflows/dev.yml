@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - "!main"
+      - "dev"
 
 name: IAC for dev
 jobs:
@@ -51,9 +52,9 @@ jobs:
 
       - name: Validate templates
         run: |
-          az storage blob download --account-name apideployments --container-name templates-test -n apim.json -f deployment/appservice.parameters.json
-          az storage blob download --account-name apideployments --container-name templates-test -n apim.json -f deployment/apim.parameters.json
-          az storage blob download --account-name apideployments --container-name templates-test -n apim.json -f deployment/main.parameters.json
+          az storage blob download --account-name apideployments --container-name templates-dev -n appservice.parameters.json -f deployment/appservice.parameters.json
+          az storage blob download --account-name apideployments --container-name templates-dev -n apim.parameters.json -f deployment/apim.parameters.json
+          az storage blob download --account-name apideployments --container-name templates-dev -n main.parameters.json -f deployment/main.parameters.json
 
           az deployment group validate --template-file deployment/apim.json --resource-group api --parameters deployment/apim.parameters.json 
           az deployment group validate --template-file deployment/appservice.json --resource-group api --parameters deployment/appservice.parameters.json 
@@ -74,7 +75,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd app
-        az storage blob download --account-name apideployments --container-name templates -f .env -n .env
+        az storage blob download --account-name apideployments --container-name templates-dev -f .env -n .env
         npm install jest
         npm install eslint
     
