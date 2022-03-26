@@ -1,0 +1,118 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "apideployments"
+        },
+        "storageSkuName": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Premium_LRS",
+                "Premium_ZRS",
+                "Standard_GRS",
+                "Standard_GZRS",
+                "Standard_LRS",
+                "Standard_RAGRS",
+                "Standard_RAGZRS",
+                "Standard_ZRS"
+            ]
+        },
+        "baseTime": {
+            "type": "string",
+            "defaultValue": "[utcNow('u')]"
+        },
+        "prodTemplateContainer": {
+            "type": "string",
+            "metadata": {
+                "description": "Production container"
+            },
+            "defaultValue": "/templates-prod"
+        },
+        "devTemplateContainer": {
+            "type": "string",
+            "metadata": {
+                "description": "Dev container"
+            },
+            "defaultValue": "/templates-dev"
+        }
+    },
+    "functions": [],
+    "variables": {
+        "serviceSasProperties": {
+            "canonicalizedResource": "[concat('/blob/', parameters('storageAccountName'),parameters('prodTemplateContainer'))]",
+            "signedResource": "c",
+            "signedPermission": "rwdl",
+            "signedstart": "[dateTimeAdd(parameters('baseTime'), 'P0M','yyyy-MM-ddTHH:mm:ssZ')]",
+            "signedExpiry": "[dateTimeAdd(parameters('baseTime'), 'P3M','yyyy-MM-ddTHH:mm:ssZ')]",
+            "signedversion": "[dateTimeAdd(parameters('baseTime'), 'P0M','yyyy-MM-ddTHH:mm:ssZ')]"
+        },
+        "serviceSasPropertiesDev": {
+            "canonicalizedResource": "[concat('/blob/', parameters('storageAccountName'),parameters('devTemplateContainer'))]",
+            "signedResource": "c",
+            "signedPermission": "rwdl",
+            "signedstart": "[dateTimeAdd(parameters('baseTime'), 'P0M','yyyy-MM-ddTHH:mm:ssZ')]",
+            "signedExpiry": "[dateTimeAdd(parameters('baseTime'), 'P3M','yyyy-MM-ddTHH:mm:ssZ')]",
+            "signedversion": "[dateTimeAdd(parameters('baseTime'), 'P0M','yyyy-MM-ddTHH:mm:ssZ')]"
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",
+            "tags": {
+                "displayName": "[parameters('storageAccountName')]"
+            },
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "[parameters('storageSkuName')]"
+            }
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'),'/default',parameters('prodTemplateContainer'))]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2021-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "publicAccess": "None"
+            }
+
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'),'/default',parameters('devTemplateContainer'))]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2021-04-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "publicAccess": "None"
+            }
+
+        }
+    ],
+    "outputs": {
+        "storageSAS": {
+            "type": "string",
+            "value": "[concat('?',listServiceSas(parameters('storageAccountName'), '2018-07-01', variables('serviceSasProperties')).serviceSasToken)]"
+        },
+        "storageContainerUrl": {
+            "type": "string",
+            "value": "[concat('https://',parameters('storageAccountName'),'.blob.core.windows.net',parameters('prodTemplateContainer'),'/')]"
+        },
+        "storageSASDev": {
+            "type": "string",
+            "value": "[concat('?',listServiceSas(parameters('storageAccountName'), '2018-07-01', variables('serviceSasPropertiesDev')).serviceSasToken)]"
+        },
+        "storageContainerUrlDev": {
+            "type": "string",
+            "value": "[concat('https://',parameters('storageAccountName'),'.blob.core.windows.net',parameters('devTemplateContainer'),'/')]"
+        }
+    }
+}
