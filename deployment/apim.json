@@ -61,11 +61,20 @@
                 "description": "Api url"
             }
         },
-         "githubToken": {
-            "type": "string",
-            "metadata": {
-                "description": "github authorization token"
-            }
+        "freePolicyUrl": {
+            "type": "string"
+        },
+        "monthlyPolicyUrl": {
+            "type": "string"
+        },
+        "yearlyPolicyUrl": {
+            "type": "string"
+        },
+        "paygPolicyUrl": {
+            "type": "string"
+        },
+        "globalPolicyUrl": {
+            "type": "string"
         }
     },
     "functions": [],
@@ -110,7 +119,7 @@
                     "name": "policy",
                     "properties": {
                         "format": "xml-link",
-                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
+                        "value": "[parameters('globalPolicyUrl')]"
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
 
@@ -156,7 +165,7 @@
                             ],
                             "properties": {
                                 "format": "xml-link",
-                                "value": "[concat('https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/payg.xml?token=',parameters('githubToken'))]"
+                                "value": "[parameters('paygPolicyUrl')]"
                             }
                         }
                     ]
@@ -204,7 +213,7 @@
                             ],
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/free.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
+                                "value": "[parameters('freePolicyUrl')]"
                             }
                         }
                     ]
@@ -251,7 +260,7 @@
                             ],
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/monthly.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
+                                "value": "[parameters('monthlyPolicyUrl')]"
                             }
                         }
                     ]
@@ -298,7 +307,7 @@
                             ],
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/yearly.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
+                                "value": "[parameters('yearlyPolicyUrl')]"
                             }
                         }
                     ]

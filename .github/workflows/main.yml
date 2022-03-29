@@ -86,4 +86,4 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./deployment/main.json
-        parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_SAS }} githubToken=${{secrets.GITHUB_TOKEN}}
+        parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_SAS }}
