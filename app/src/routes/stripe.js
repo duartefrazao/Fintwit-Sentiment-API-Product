@@ -2,9 +2,11 @@ const express = require('express');
 
 const stripeRoutes = express.Router();
 const ApimService = require('../services/apimService');
+const StripeService = require('../services/stripeService');
 
 const register = (app) => {
   const apim = new ApimService();
+  const stripeService = new StripeService();
 
   stripeRoutes.get('/checkout', async (req, res) => {
     const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
@@ -110,11 +112,17 @@ const register = (app) => {
     const subs = await apim.getSubscription(subscriptionId);
 
     const productId = subs.scope.split('/').reverse()[0];
+
     const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+    const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
 
     if (productId === 'payg') {
-      await apim.reportUsage();
-      stripe.subscriptions.del(subscriptionId);
+      await stripeService.reportUsageSubscription(subscriptionId, stripeSubscription, stripe);
+
+      stripe.subscriptions.del(subscriptionId, {
+        invoice_now: true,
+        prorate: false,
+      });
     } else {
       await stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: true,

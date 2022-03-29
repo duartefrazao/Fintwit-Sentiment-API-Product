@@ -176,58 +176,6 @@ class ApimService {
     return this.apimClient.user.get(this.resourceGroupName, this.serviceName, userId);
   }
 
-  async reportUsage() {
-    await this.init();
-
-    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
-
-    const priceId = (await stripe.prices.list({ active: true, product: 'payg' })).data[0].id;
-
-    const subscriptions = await stripe.subscriptions.list({
-      price: priceId,
-    });
-    const currentTime = new Date();
-    const currentTimeISO = Math.floor(currentTime.getTime() / 1000);
-
-    for (const subscription of subscriptions.data) {
-      const subscriptionId = subscription.id;
-
-      const subscriptionPriceID = subscription.items.data[0].id;
-
-      let lastUsageReportDate;
-      if (subscription.metadata.lastUsageReportDate) {
-        lastUsageReportDate = new Date(subscription.metadata.lastUsageReportDate * 1000);
-      } else {
-        lastUsageReportDate = new Date(subscription.current_period_start * 1000);
-      }
-
-      const filter = `timestamp ge datetime'${lastUsageReportDate.toISOString()
-      }' and timestamp le datetime'${currentTime.toISOString()}' and subscriptionId eq '${subscriptionId}'`;
-
-      const report = await this.apimClient.reports.listBySubscription(
-        this.resourceGroupName,
-        this.serviceName,
-        filter,
-      );
-
-      const callTotal = (await report.next()).value.callCountTotal;
-      const usageUnits = Math.floor(callTotal / 100);
-
-      if (usageUnits !== 0) {
-        await stripe.subscriptionItems.createUsageRecord(
-          subscriptionPriceID,
-          { quantity: usageUnits, timestamp: currentTimeISO },
-        );
-
-        await stripe.subscriptions.update(subscriptionId, {
-          metadata: {
-            lastUsageReportDate: currentTimeISO,
-          },
-        });
-      }
-    }
-  }
-
   createRequest = (email, password) => {
     const credentials = `Basic ${Buffer.from(`${email}:${password}`).toString('base64')}`;
     const url = new URL(process.env.APIM_MANAGEMENT_URL);

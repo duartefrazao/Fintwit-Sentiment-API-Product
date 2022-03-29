@@ -2,7 +2,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const { CronJob } = require('cron');
 const routes = require('./routes/routes');
+const StripeService = require('./services/stripeService');
 
 dotenv.config();
 
@@ -21,4 +23,17 @@ routes.register(app);
 
 const port = (process.env.PORT || 8000);
 app.listen(port);
+
+const cron = new CronJob(
+  '0 0 * * *',
+  async () => {
+    await (new StripeService()).reportUsage();
+  },
+  null,
+  true,
+  'Europe/London',
+);
+
+console.log(`Cron reporting api usage daily is ${cron.running ? 'running' : 'stopped'}.`);
+
 console.log(`Server is listening on port ${port}`);
