@@ -3,11 +3,14 @@ const { URLSearchParams } = require('url');
 
 const apimRoutes = express.Router();
 const ApimService = require('../services/apimService');
+const StripeService = require('../services/stripeService');
 
 const register = (app) => {
   const apim = new ApimService();
+  const stripeService = new StripeService();
+
   apimRoutes.get('/test', async () => {
-    apim.reportUsage();
+    stripeService.reportUsage();
   });
   apimRoutes.post('/signup', async (req, res) => {
     const { email } = req.body;
