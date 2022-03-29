@@ -1,9 +1,16 @@
 <policies>
     <inbound>
+        <base />
+        <quota calls="100000" renewal-period="2592000" />
+        <rate-limit calls="200" renewal-period="60" />
     </inbound>
     <backend>
-        <forward-request />
+        <base />
     </backend>
-    <outbound />
-    <on-error />
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
 </policies>

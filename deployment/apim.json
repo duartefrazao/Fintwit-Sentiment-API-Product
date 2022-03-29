@@ -48,6 +48,14 @@
             "metadata": {
                 "description": "Delegation requests from APIM to Delegation app (Set for production)"
             }
+        },
+        "apiName": {
+            "type": "string",
+            "defaultValue": "momentum"
+        },
+        "apiUrl": {
+            "type": "string",
+            "defaultValue": "http://echoapi.cloudapp.net/api"
         }
     },
     "functions": [],
@@ -128,6 +136,15 @@
                                 "payg"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/payg.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                            }
                         }
                     ]
 
@@ -164,6 +181,15 @@
                                 "free"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/free.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                            }
                         }
                     ]
 
@@ -199,6 +225,15 @@
                                 "monthly"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/monthly.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                            }
                         }
                     ]
 
@@ -234,6 +269,15 @@
                                 "yearly"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/yearly.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                            }
                         }
                     ]
 
@@ -247,8 +291,37 @@
                         "secret": false,
                         "value": "[parameters('appName')]"
                     },
-                    "dependsOn": ["[parameters('apimServiceName')]"]
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+                },
+                {
+                    "type": "namedValues",
+                    "apiVersion": "2021-08-01",
+                    "name": "apimServiceName",
+                    "properties": {
+                        "displayName": "apimServiceName",
+                        "secret": false,
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+                },
+                {
+                    "type": "apis",
+                    "apiVersion": "2021-08-01",
+                    "name": "[parameters('apiName')]",
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "properties": {
+                        "displayName": "[parameters('apiName')]",
+                        "apiRevision": "1",
+                        "subscriptionRequired": true,
+                        "serviceUrl": "[parameters('apiUrl')]",
+                        "path": "[parameters('apiName')]",
+                        "protocols": [
+                            "https"
+                        ],
+                        "isCurrent": true
+                    }
                 }
+
             ]
         }
     ],
