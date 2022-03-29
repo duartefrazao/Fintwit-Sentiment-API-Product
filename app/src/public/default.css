@@ -17,3 +17,11 @@
 
 }
   
+#form-option{
+    display: flex;
+    flex-direction: row;
+}
+
+#form-option form{
+    margin-right: 1em;
+}

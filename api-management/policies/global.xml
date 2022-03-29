@@ -1,5 +1,19 @@
 <policies>
-    <inbound />
+    <inbound>
+        <cors allow-credentials="true">
+            <allowed-origins>
+                <origin>https://{{apimServiceName}}.developer.azure-api.net</origin>
+                <origin>https://{{apimServiceName}}.azure-api.net</origin>
+                <origin>https://{{appServiceName}}.azurewebsites.net</origin>
+            </allowed-origins>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+            <expose-headers>
+                <header>*</header>
+            </expose-headers>
+        </cors>
+    </inbound>
     <backend>
         <forward-request />
     </backend>

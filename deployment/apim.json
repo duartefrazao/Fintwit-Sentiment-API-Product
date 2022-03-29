@@ -103,7 +103,7 @@
                     "name": "payg",
                     "properties": {
                         "approvalRequired": false,
-                        "description": "Pay as you go subscription",
+                        "description": "Pay as you go subscription, billed monthly.\n10cent/100calls.",
                         "displayName": "Pay as you go",
                         "state": "published",
                         "subscriptionRequired": true,
@@ -138,7 +138,7 @@
                     "name": "free",
                     "properties": {
                         "approvalRequired": false,
-                        "description": "Free subscription",
+                        "description": "Free subscription allowing 100 calls per month.",
                         "displayName": "Free",
                         "state": "notPublished",
                         "subscriptionRequired": true,
@@ -171,11 +171,11 @@
                 {
                     "type": "products",
                     "apiVersion": "2021-08-01",
-                    "name": "basic",
+                    "name": "monthly",
                     "properties": {
                         "approvalRequired": false,
-                        "description": "A standard subscription with a set monthly quota of X calls",
-                        "displayName": "Basic",
+                        "description": "Monthly subscription of 40€/month allowing up to 100,000 calls per month.\n4 cents per 100 calls.",
+                        "displayName": "Basic Monthly",
                         "state": "published",
                         "subscriptionRequired": true,
                         "terms": "Terms of usage TODO"
@@ -187,7 +187,7 @@
                             "apiVersion": "2021-08-01",
                             "name": "guests",
                             "dependsOn": [
-                                "basic"
+                                "monthly"
                             ]
 
                         },
@@ -196,7 +196,42 @@
                             "apiVersion": "2021-08-01",
                             "name": "developers",
                             "dependsOn": [
-                                "basic"
+                                "monthly"
+                            ]
+
+                        }
+                    ]
+
+                },
+                {
+                    "type": "products",
+                    "apiVersion": "2021-08-01",
+                    "name": "yearly",
+                    "properties": {
+                        "approvalRequired": false,
+                        "description": "Yearly subscription of 30€/month allowing up to 100,000 calls per month.\n3 cents per 100 calls.",
+                        "displayName": "Basic Yearly",
+                        "state": "published",
+                        "subscriptionRequired": true,
+                        "terms": "Terms of usage TODO"
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "resources": [
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "guests",
+                            "dependsOn": [
+                                "yearly"
+                            ]
+
+                        },
+                        {
+                            "type": "groups",
+                            "apiVersion": "2021-08-01",
+                            "name": "developers",
+                            "dependsOn": [
+                                "yearly"
                             ]
 
                         }

@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Basic Monthly",
+        "id": "monthly",
+        "description": "Monthly subscription of 40€/month.\n4 cents per 100 calls.",
+        "price": {
+            "type":"recurring",
+            "unit_amount":4000,
+            "quota":1000,
+            "recurring":{
+                "interval": "month",
+                "interval_count": 1,
+                "usage_type": "licensed"
+
+            }
+        }
+    },
+    {
+        "name": "Basic Yearly",
+        "id": "yearly",
+        "description": "Yearly subscription of 30€/month.\n3 cents per 100 calls.",
+        "price": {
+            "type":"recurring",
+            "unit_amount":37000,
+            "quota":1000,
+            "recurring":{
+                "interval": "year",
+                "interval_count": 1,
+                "usage_type": "licensed"
+
+            }
+        }
+    },
+    {
+        "name": "Pay as you go",
+        "id": "payg",
+        "description": "Pay as you go subscription, billed monthly.\n10cent per 100 calls.",
+        "price": {
+            "type":"recurring",
+            "unit_amount":10,
+            "quota":1,
+            "recurring":{
+                "interval": "month",
+                "interval_count": 1,
+                "usage_type": "metered"
+
+            }
+        }
+    }
+]
