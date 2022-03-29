@@ -54,9 +54,9 @@ test('Create subscription', async () => {
     testStripeSubscriptionId,
     new_user.name,
     testSubscriptionName,
-    'developer',
+    'monthly',
   );
-
+  
   expect(new_subscription.state).toBe('active');
   const result = await apim.closeAccount(new_user.name);
 });
@@ -68,7 +68,7 @@ test('Delete subscription', async () => {
     testStripeSubscriptionId,
     new_user.name,
     testSubscriptionName,
-    'developer',
+    'monthly',
   );
 
   const new_subscription = await apim.getSubscription(testStripeSubscriptionId);

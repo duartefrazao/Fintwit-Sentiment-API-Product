@@ -13,6 +13,10 @@
     "rules": {
         "class-methods-use-this":"off",
         "no-console":"off",
-        "no-underscore-dangle":"off"
+        "no-underscore-dangle":"off",
+        "no-await-in-loop":"off",
+        "no-restricted-syntax":"off",
+        "func-names":"off",
+        "global-require":"off"
     }
 }

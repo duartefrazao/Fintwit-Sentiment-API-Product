@@ -6,31 +6,32 @@ const ApimService = require('../services/apimService');
 
 const register = (app) => {
   const apim = new ApimService();
-
+  apimRoutes.get('/test', async () => {
+    apim.reportUsage();
+  });
   apimRoutes.post('/signup', async (req, res) => {
     const { email } = req.body;
     const { password } = req.body;
     const { firstName } = req.body;
     const { surname } = req.body;
     const returnUrl = req.body.returnUrl || '/';
-
     try {
       await apim.signup(email, password, firstName, surname);
     } catch (error) {
-      const redirectParams = new URLSearchParams(returnUrl);
+      const redirectParams = new URLSearchParams(returnUrl.split('?')[1]);
       redirectParams.get('errorMessage');
       redirectParams.set('errorMessage', error.details.details[0].message);
       redirectParams.get('errorMessage');
-      res.redirect(redirectParams.toString());
+      res.redirect(`/apim-delegation?${redirectParams.toString()}`);
       return;
     }
 
     const identity = await apim.signin(email, password);
 
     if (!identity.authenticated) {
-      const redirectParams = new URLSearchParams();
+      const redirectParams = new URLSearchParams(returnUrl.split('?')[1]);
       redirectParams.append('errorMessage', 'Wrong email or password.');
-      res.redirect(`${returnUrl}&${redirectParams.toString()}`);
+      res.redirect(`/apim-delegation?${redirectParams.toString()}`);
       return;
     }
 
@@ -140,7 +141,33 @@ const register = (app) => {
         res.render('pages/index');
         break;
       case 'Unsubscribe':
-        res.render('pages/unsubscribe', { subscriptionId: req.query.subscriptionId });
+        {
+          const { subscriptionId } = req.query;
+
+          const subscription = await apim.getSubscription(subscriptionId);
+
+          const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+          /* eslint-disable */
+
+          const { cancel_at_period_end } = await stripe.subscriptions.retrieve(
+            subscriptionId,
+          );
+
+          if (cancel_at_period_end) {
+            res.render('pages/unsubscribe-done', {
+              subscriptionName: subscription.displayName,
+              subscriptionId,
+            });
+          } else {
+            res.render('pages/unsubscribe', {
+              subscriptionName: subscription.displayName,
+              subscriptionId,
+            });
+          }
+
+          /* eslint-enable */
+        }
         break;
       case 'CloseAccount':
         res.render('pages/closeAccount', { errorMessage, userId });

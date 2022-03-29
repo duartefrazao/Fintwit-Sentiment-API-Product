@@ -1,13 +1,14 @@
 const express = require('express');
 
 const stripeRoutes = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const ApimService = require('../services/apimService');
 
 const register = (app) => {
   const apim = new ApimService();
 
   stripeRoutes.get('/checkout', async (req, res) => {
+    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
     const { subscriptionName } = req.query;
     const { productId } = req.query;
     const { userId } = req.query;
@@ -17,16 +18,21 @@ const register = (app) => {
     const product = await apim.getProduct(productId);
     const price = (await stripe.prices.list({ product: product.name, active: true })).data[0].id;
 
+    const lineItem = {
+      price,
+    };
+    if (product.name !== 'payg') {
+      lineItem.quantity = 1;
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer_email: email,
       line_items: [
-        {
-          price,
-        },
+        lineItem,
       ],
       payment_method_types: ['card'],
-      success_url: `${process.env.APIM_DEVELOPER_PORTAL_URL}/apis`,
+      success_url: `${process.env.APIM_DEVELOPER_PORTAL_URL}/profile`,
       cancel_url: process.env.APIM_DEVELOPER_PORTAL_URL,
       subscription_data: {
         metadata: {
@@ -39,25 +45,23 @@ const register = (app) => {
 
     res.redirect(303, session.url);
   });
-  const endpointSecret = 'whsec_948ed5c1da4dc18ff6bc289a845ba5cf100b564ac1185064c08c83b671d05b59';
 
   stripeRoutes.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
-
     let event;
+    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
-        process.env.STRIPE_WEBHOOK_SECRET || endpointSecret,
+        process.env.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
       console.log(err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    console.log(2);
     // Handle the event
     switch (event.type) {
       case 'customer.subscription.created': {
@@ -79,6 +83,7 @@ const register = (app) => {
 
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
+        console.log();
         const subscriptionToChange = event.data.object;
 
         const { status } = subscriptionToChange;
@@ -100,7 +105,32 @@ const register = (app) => {
   });
 
   stripeRoutes.post('/unsubscribe', async (req, res) => {
-    stripe.subscriptions.del(req.body.subscriptionId);
+    const { subscriptionId } = req.body;
+
+    const subs = await apim.getSubscription(subscriptionId);
+
+    const productId = subs.scope.split('/').reverse()[0];
+    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+    if (productId === 'payg') {
+      await apim.reportUsage();
+      stripe.subscriptions.del(subscriptionId);
+    } else {
+      await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+      });
+    }
+
+    res.redirect(`${process.env.APIM_DEVELOPER_PORTAL_URL}/profile`);
+  });
+
+  stripeRoutes.post('/cancel-unsubscribe', async (req, res) => {
+    const { subscriptionId } = req.body;
+    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+    await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: false,
+    });
     res.redirect(`${process.env.APIM_DEVELOPER_PORTAL_URL}/profile`);
   });
 
