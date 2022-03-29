@@ -51,11 +51,15 @@
         },
         "apiName": {
             "type": "string",
-            "defaultValue": "momentum"
+            "metadata": {
+                "description": "Api name"
+            }
         },
         "apiUrl": {
             "type": "string",
-            "defaultValue": "http://echoapi.cloudapp.net/api"
+            "metadata": {
+                "description": "Api url"
+            }
         }
     },
     "functions": [],
@@ -100,7 +104,7 @@
                     "name": "policy",
                     "properties": {
                         "format": "xml-link",
-                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
 
@@ -143,7 +147,7 @@
                             "name": "policy",
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/payg.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/payg.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
                             }
                         }
                     ]
@@ -188,7 +192,7 @@
                             "name": "policy",
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/free.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/free.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
                             }
                         }
                     ]
@@ -232,7 +236,7 @@
                             "name": "policy",
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/monthly.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/monthly.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
                             }
                         }
                     ]
@@ -276,7 +280,7 @@
                             "name": "policy",
                             "properties": {
                                 "format": "xml-link",
-                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/yearly.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                                "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/yearly.xml?token=GHSAT0AAAAAABQC22BVC2ZM7VOBAJ6VY26IYSML2GQ"
                             }
                         }
                     ]
