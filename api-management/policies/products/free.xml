@@ -1,8 +1,8 @@
 <policies>
     <inbound>
         <base />
-        <quota calls="100000" renewal-period="2592000" />
-        <rate-limit calls="200" renewal-period="60" />
+        <quota calls="500" renewal-period="2592000" />
+        <rate-limit calls="20" renewal-period="60" />
     </inbound>
     <backend>
         <base />

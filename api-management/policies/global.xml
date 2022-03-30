@@ -4,7 +4,7 @@
             <allowed-origins>
                 <origin>https://{{apimServiceName}}.developer.azure-api.net</origin>
                 <origin>https://{{apimServiceName}}.azure-api.net</origin>
-                <origin>https://{{appServiceName}}.azurewebsites.net</origin>
+                <origin>https://{{delegationAppServiceName}}.azurewebsites.net</origin>
             </allowed-origins>
             <allowed-headers>
                 <header>*</header>

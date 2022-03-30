@@ -48,6 +48,33 @@
             "metadata": {
                 "description": "Delegation requests from APIM to Delegation app (Set for production)"
             }
+        },
+        "apiName": {
+            "type": "string",
+            "metadata": {
+                "description": "Api name"
+            }
+        },
+        "apiUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "Api url"
+            }
+        },
+        "freePolicyUrl": {
+            "type": "string"
+        },
+        "monthlyPolicyUrl": {
+            "type": "string"
+        },
+        "yearlyPolicyUrl": {
+            "type": "string"
+        },
+        "paygPolicyUrl": {
+            "type": "string"
+        },
+        "globalPolicyUrl": {
+            "type": "string"
         }
     },
     "functions": [],
@@ -92,7 +119,7 @@
                     "name": "policy",
                     "properties": {
                         "format": "xml-link",
-                        "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BU2WTOLKNSOBIJYGSCYSG456Q"
+                        "value": "[parameters('globalPolicyUrl')]"
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ]
 
@@ -128,6 +155,18 @@
                                 "payg"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "dependsOn": [
+                                "payg"
+                            ],
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "[parameters('paygPolicyUrl')]"
+                            }
                         }
                     ]
 
@@ -164,6 +203,18 @@
                                 "free"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "dependsOn": [
+                                "free"
+                            ],
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "[parameters('freePolicyUrl')]"
+                            }
                         }
                     ]
 
@@ -199,6 +250,18 @@
                                 "monthly"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "dependsOn": [
+                                "monthly"
+                            ],
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "[parameters('monthlyPolicyUrl')]"
+                            }
                         }
                     ]
 
@@ -234,6 +297,18 @@
                                 "yearly"
                             ]
 
+                        },
+                        {
+                            "type": "policies",
+                            "apiVersion": "2021-08-01",
+                            "name": "policy",
+                            "dependsOn": [
+                                "yearly"
+                            ],
+                            "properties": {
+                                "format": "xml-link",
+                                "value": "[parameters('yearlyPolicyUrl')]"
+                            }
                         }
                     ]
 
@@ -247,8 +322,37 @@
                         "secret": false,
                         "value": "[parameters('appName')]"
                     },
-                    "dependsOn": ["[parameters('apimServiceName')]"]
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+                },
+                {
+                    "type": "namedValues",
+                    "apiVersion": "2021-08-01",
+                    "name": "apimServiceName",
+                    "properties": {
+                        "displayName": "apimServiceName",
+                        "secret": false,
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+                },
+                {
+                    "type": "apis",
+                    "apiVersion": "2021-08-01",
+                    "name": "[parameters('apiName')]",
+                    "dependsOn": [ "[parameters('apimServiceName')]" ],
+                    "properties": {
+                        "displayName": "[parameters('apiName')]",
+                        "apiRevision": "1",
+                        "subscriptionRequired": true,
+                        "serviceUrl": "[parameters('apiUrl')]",
+                        "path": "[parameters('apiName')]",
+                        "protocols": [
+                            "https"
+                        ],
+                        "isCurrent": true
+                    }
                 }
+
             ]
         }
     ],
