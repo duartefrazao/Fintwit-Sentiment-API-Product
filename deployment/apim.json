@@ -75,6 +75,9 @@
         },
         "globalPolicyUrl": {
             "type": "string"
+        },
+        "apiLink": {
+            "type": "string"        
         }
     },
     "functions": [],
@@ -349,7 +352,10 @@
                         "protocols": [
                             "https"
                         ],
-                        "isCurrent": true
+                        "isCurrent": true,
+                        "value": "[parameters('apiLink')]",
+                        "format": "openapi-link"
+                        
                     }
                 }
 
