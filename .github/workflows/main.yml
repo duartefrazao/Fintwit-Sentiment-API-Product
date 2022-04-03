@@ -91,5 +91,5 @@ jobs:
     
     - name: Deploy Azure Functions
       run: |
-        sh updateFunctions.sh
+        sh deployment/updateFunctions.sh
         
