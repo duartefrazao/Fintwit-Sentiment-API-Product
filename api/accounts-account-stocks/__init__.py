@@ -23,6 +23,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(json.dumps({"msg":"No record for the specified date or account."}),status_code=201)
     
     account = document["accountRecords"][account]
-    sentiment = round(account['accountSentimentSum']/account['accountSentimentCount'],2)
+    stocks = list(account['accountTickerSentiment'].keys())
 
-    return func.HttpResponse(json.dumps({"sentiment":sentiment}), status_code=200) 
+    return func.HttpResponse(json.dumps({"stocks":stocks}), status_code=200) 

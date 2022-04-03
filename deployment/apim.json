@@ -55,12 +55,6 @@
                 "description": "Api name"
             }
         },
-        "apiUrl": {
-            "type": "string",
-            "metadata": {
-                "description": "Api url"
-            }
-        },
         "freePolicyUrl": {
             "type": "string"
         },
@@ -78,10 +72,15 @@
         },
         "apiLink": {
             "type": "string"        
+        },
+        "functionAppName": {
+            "type": "string"
         }
     },
     "functions": [],
-    "variables": {},
+    "variables": {
+        "apiUrl": "[concat('https://',parameters('functionAppName'),'.azurewebsites.net')]"
+    },
     "resources": [
         {
             "type": "Microsoft.ApiManagement/service",
@@ -347,8 +346,8 @@
                         "displayName": "[parameters('apiName')]",
                         "apiRevision": "1",
                         "subscriptionRequired": true,
-                        "serviceUrl": "[parameters('apiUrl')]",
-                        "path": "[parameters('apiName')]",
+                        "serviceUrl": "[variables('apiUrl')]",
+                        "path": "",
                         "protocols": [
                             "https"
                         ],

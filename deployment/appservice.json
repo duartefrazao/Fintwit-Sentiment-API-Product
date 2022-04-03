@@ -78,6 +78,30 @@
             "metadata": {
                 "description": "Storage Account Name"
             }
+        },
+        "cognitiveServicesEndpoint": {
+            "type": "string",
+            "metadata": {
+                "description": "Endpoint for cognitive services resource"
+            }
+        },
+        "cognitiveServicesKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Key for cognitive services resource"
+            }
+        },
+        "twitterToken": {
+            "type": "string",
+            "metadata": {
+                "description": "Twitter token"
+            }
+        },
+        "cosmosConnectionString": {
+            "type": "string",
+            "metadata": {
+                "description": "CosmosConnectionString"
+            }
         }
 
     },
@@ -143,6 +167,22 @@
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "python"
+                        },
+                        {
+                            "name": "cognitiveServicesEndpoint",
+                            "value" : "[parameters('cognitiveServicesEndpoint')]"
+                        },
+                        {
+                            "name": "cognitiveServicesKey",
+                            "value" : "[parameters('cognitiveServicesKey')]"
+                        },
+                        {
+                            "name": "twitterToken",
+                            "value": "[parameters('twitterToken')]"
+                        },
+                        {
+                            "name": "cosmosConnectionString",
+                            "value": "[parameters('cosmosConnectionString')]"
                         }
                     ]
                 }

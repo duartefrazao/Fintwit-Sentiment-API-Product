@@ -8,13 +8,11 @@ from datetime import date
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
-    client = MongoClient(os.environ['connectionString'])
-    records = client.records.records
+    client = MongoClient(os.environ['cosmosConnectionString'])
+    records = client.sentiment.records
     dateValue = req.params.get('date')
-    type  = req.route_params.get('type')
-    validTypes = {'positive','negative','neutral','mixed'}
 
-    if not dateValue or not type or type not in validTypes:
+    if not dateValue:
         return func.HttpResponse(json.dumps({"msg":"Invalid request."}),status_code=400)
 
 
@@ -22,4 +20,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     
     if not document:
         return func.HttpResponse(json.dumps({"msg":"No record for the specified date."}),status_code=201)
-    return func.HttpResponse(json.dumps({"sentiment":document['sentiment']}), status_code=200) 
+
+    sentiment = round(document['sentimentReplies']/document['sentimentRepliesCount'],2)
+    return func.HttpResponse(json.dumps({"sentiment":sentiment}), status_code=200) 

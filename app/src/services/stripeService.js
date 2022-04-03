@@ -46,7 +46,9 @@ class StripeService {
 
   async reportUsage() {
     await this.apim.init();
-
+    
+    console.log("Running reportUsage")
+    
     const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
     const priceId = (await stripe.prices.list({ active: true, product: 'payg' })).data[0].id;

@@ -6,3 +6,4 @@ az storage blob upload --account-name apideployments --container-name $CONTAINER
 az storage blob upload --account-name apideployments --container-name $CONTAINER_NAME --name appservice.parameters.json --file deployment/appservice.parameters.json 
 az storage blob upload --account-name apideployments --container-name $CONTAINER_NAME --name apim.parameters.json --file deployment/apim.parameters.json 
 az storage blob upload --account-name apideployments --container-name $CONTAINER_NAME --name .env --file app/.env 
+az storage blob upload --account-name apideployments --container-name $CONTAINER_NAME --name sentiment.json --file api-management/api/sentiment.json 

@@ -5,3 +5,6 @@
 azure-functions
 pymongo
 datetime
+tweepy
+azure.core
+azure.ai.textanalytics 
