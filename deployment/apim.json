@@ -340,7 +340,7 @@
                 {
                     "type": "apis",
                     "apiVersion": "2021-08-01",
-                    "name": "[parameters('apiName')]",
+                    "name": "Sentiment",
                     "dependsOn": [ "[parameters('apimServiceName')]" ],
                     "properties": {
                         "displayName": "[parameters('apiName')]",
