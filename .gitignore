@@ -3,7 +3,7 @@ app/.env
 deployment/main.parameters.json
 deployment/main.parameters.json.bak
 deployment/appservice.parameters.json.bak
-deployment/apim.parameters.json
+deployment/apim.parameters.json.bak
 *.sh
 .vscode
 *.zip
