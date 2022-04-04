@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appPlanSku": {
+            "value": "B1"
+        },
+        "planName": {
+            "value": "app-plan-sentiment-api"
+        },
+        "appName": {
+            "value": "app-sentiment-api"
+        },
+        "apimServiceName": {
+            "value": "apim-sentiment-api"
+        },
+        "subscriptionId": {
+            "value": "" 
+        },
+        "servicePrincipalAppId": {
+            "value": "" 
+        },
+        "servicePrincipalPassword": {
+            "value": "" 
+        },
+        "stripePublicKey": {
+            "value": ""
+        },
+        "stripePrivateKey": {
+            "value": "" 
+        },
+        "stripeWebhookSecret": {
+            "value": "" 
+        },
+        "servicePrincipalTenantId":{
+            "value": ""
+        },
+        "functionAppName": {
+            "value": "api-sentiment"
+        },
+        "appInsightsName": {
+            "value": "api-sentiment-insights"
+        },
+        "storageAccountName": {
+            "value": "apideployments"
+        },
+        "cognitiveServicesEndpoint": {
+            "value": "" 
+        },
+        "cognitiveServicesKey": {
+            "value": "" 
+        },
+        "twitterToken": {
+            "value": "" 
+        },
+        "cosmosConnectionString": {
+            "value": "" 
+        }
+    }
+}
