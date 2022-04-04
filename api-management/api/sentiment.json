@@ -107,7 +107,7 @@
         ],
         "responses": {
           "200": {
-            "description": "FFound record and returns average sentiment score for tweets",
+            "description": "Found record and returns average sentiment score for tweets",
             "content": {
               "application/json": {
                 "schema": {
@@ -202,7 +202,7 @@
         }
       }
     },
-    "/accounts/{account}:/sentiment/tweets": {
+    "/accounts/{account}/sentiment/tweets": {
       "get": {
         "summary": "Daily sentiment score for analysed tweets from an account",
         "operationId": "accountsAccountSentimentTweets",
@@ -245,7 +245,7 @@
         }
       }
     },
-    "/accounts/{account}:/sentiment/replies": {
+    "/accounts/{account}/sentiment/replies": {
       "get": {
         "summary": "Daily sentiment score for analysed replies to tweets from an account for the specified date",
         "operationId": "accountsAccountSentimentReplies",
@@ -288,7 +288,7 @@
         }
       }
     },
-    "/accounts/{account}:/tweets/number": {
+    "/accounts/{account}/tweets/number": {
       "get": {
         "summary": "Number of tweets analysed in the specified date for the account",
         "operationId": "accountsAccountTweetsNumber",
@@ -331,7 +331,7 @@
         }
       }
     },
-    "/accounts/{account}:/replies/number": {
+    "/accounts/{account}/replies/number": {
       "get": {
         "summary": "Number of tweet replies analysed in the specified date for the account",
         "operationId": "accountsAccountRepliesNumber",
@@ -374,7 +374,7 @@
         }
       }
     },
-    "/accounts/{account}:/stocks": {
+    "/accounts/{account}/stocks": {
       "get": {
         "summary": "Stocks the account referenced during the day",
         "operationId": "accountsAccountStocks",
@@ -430,7 +430,7 @@
         }
       }
     },
-    "/accounts/{account}:/stock/{stock}:/sentiment": {
+    "/accounts/{account}/stock/{stock}/sentiment": {
       "get": {
         "summary": "Stock and respective sentiment the account referenced during the day",
         "operationId": "accountsAccountStocksStockSentiment",
@@ -529,7 +529,7 @@
         }
       }
     },
-    "/stocks/{stock}:/sentiment": {
+    "/stocks/{stock}/sentiment": {
       "get": {
         "summary": "Stock and respective sentiment referenced during the day",
         "operationId": "stocksStockSentiment",

@@ -162,7 +162,7 @@ def processTweet(info,infoAccount, tweet,tweetIndex, account):
 
     for replyIndex, reply in enumerate(replies):
         if tweetIndex < MAX_ANALYSED_TWEETS and replyIndex < MAX_ANALYSED_REPLIES:
-            sentiment,sentimentScore = sentimentAnalysis(reply.text)
+            sentiment,sentimentScore = sentimentAnalysis(reply.text.upper())
             updateTotalSentiment(sentiment,sentimentScore,info, False)
 
 
@@ -217,8 +217,9 @@ def sample_analyze_sentiment():
             "accountTickerSentiment": {
             },
         }
-
+        
         for tweetIndex, tweet in enumerate(tweets[0:2]):
+            tweet.text=tweet.text.upper()
             processTweet(info,infoAccount, tweet, tweetIndex,account)
         info["accountRecords"][account]= infoAccount
     cosmos(info)

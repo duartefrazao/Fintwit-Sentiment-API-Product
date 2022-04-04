@@ -11,7 +11,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     client = MongoClient(os.environ['cosmosConnectionString'])
     records = client.sentiment.records
     dateValue = req.params.get('date')
-    stock  = req.route_params.get('stock')
+    stock  = req.route_params.get('stock').upper()
 
     if not dateValue or not stock :
         return func.HttpResponse(json.dumps({"msg":"Invalid request."}),status_code=400)
