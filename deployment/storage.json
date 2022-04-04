@@ -57,7 +57,7 @@
             "metadata": {
                 "description": "Service Name"
             },
-            "defaultValue": "testfdsghj"
+            "defaultValue": "cognitiveServicesTwitterSentiment"
         }
     },
     "functions": [],
