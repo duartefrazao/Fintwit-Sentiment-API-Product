@@ -1,1 +1,1 @@
-az storage blob upload --account-name apideployments --container-name templates --name .env --file app/.env 
+az storage blob upload --account-name apideployments --container-name templates --name .env --file app/.env --overwrite
