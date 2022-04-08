@@ -46,7 +46,10 @@
                 "parametersLink": {
                     "uri": "[concat(parameters('storageContainerUrl'),'apim.parameters.json',parameters('storageSAS'))]"
                 }
-            }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments','appservice')]"
+            ]
         }
     ],
     "outputs": {}

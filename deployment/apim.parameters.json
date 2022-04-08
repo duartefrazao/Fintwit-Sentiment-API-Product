@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "value": "app-sentiment-api"
+        },
+        "apimServiceName": {
+            "value": "apim-sentiment-api"
+        },
+        "apimPublisherEmail": {
+            "value": ""
+        },
+        "apimPublisherName": {
+            "value": ""
+        },
+        "apimSku": {
+            "value": "Developer"
+        },
+        "apimSkuCount": {
+            "value": 1
+        },
+        "validationKey": {
+            "value": "validationKey" 
+        },
+        "apiName": {
+            "value": "Sentiment"
+        },
+        "freePolicyUrl":{
+            "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/free.xml?token=GHSAT0AAAAAABQC22BUOL5HTG4EMX3FLQB4YSMNHTQ"
+        },
+        "monthlyPolicyUrl": {
+            "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/monthly.xml?token=GHSAT0AAAAAABQC22BVW4B6JJOHOEWRLVLQYSMNHTQ"
+        },
+        "yearlyPolicyUrl":{
+            "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/yearly.xml?token=GHSAT0AAAAAABQC22BVF2PP7UWLQEVJWAZUYSMNHSQ"
+        },
+        "paygPolicyUrl":{
+            "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/products/payg.xml?token=GHSAT0AAAAAABQC22BVTCNLX5GK6BWVICRWYSMNHTA"
+        }
+        ,
+        "globalPolicyUrl":{
+            "value": "https://raw.githubusercontent.com/duartefrazao/api/main/api-management/policies/global.xml?token=GHSAT0AAAAAABQC22BVM6RSO6O26DN66WLWYSMNHJQ"
+        },
+        "apiLink": {
+            "value": "https://apideployments.blob.core.windows.net/templates-prod/sentiment.json?sp=r&st=2022-04-03T22:49:48Z&se=2022-04-04T06:49:48Z&spr=https&sv=2020-08-04&sr=b&sig=GBcEDkNMAfHS4vJiW%2B4lKfJDjnIS5AZYH6FkPaCg0Ts%3D"
+        },
+        "functionAppName": {
+            "value": "api-sentiment"
+        }
+    }
+}

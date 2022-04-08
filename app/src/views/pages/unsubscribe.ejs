@@ -1,7 +1,10 @@
-<h1>Unsubscribe from <%= subscriptionName %></h1>
+<h1 class="title">Unsubscribe from <%= subscriptionName %></h1>
 <p>For <b>basic</b> subscriptions you will avoid any future charges and maintain access until the end of the period. </p>
 <p>For <b>pay as you go</b> subscriptions you will be billed the remaing unpaid usage and lose access immediately. </p>
 <form action="/unsubscribe" method="post">
+    <a href="<%= returnUrl %>" >
+        <button type="button" class="btn btn-light">Home</button>
+    </a>
     <button type="submit" class="btn btn-primary">Unsubscribe</button>
     <input type="hidden" name="subscriptionId" value="<%= subscriptionId %>"/>
 </form>

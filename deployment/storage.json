@@ -37,6 +37,27 @@
                 "description": "Dev container"
             },
             "defaultValue": "/templates-dev"
+        },
+        "cosmosAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "DB account name"
+            },
+            "defaultValue": "database-sentiment-api"
+        },
+        "dbLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "DB location"
+            },
+            "defaultValue":"northeurope"
+        },
+        "cognitiveServicesAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Service Name"
+            },
+            "defaultValue": "cognitiveServicesTwitterSentiment"
         }
     },
     "functions": [],
@@ -95,6 +116,116 @@
                 "publicAccess": "None"
             }
 
+        },
+        {
+            "name": "[parameters('cosmosAccountName')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2021-10-15",
+            "location": "[parameters('dbLocation')]",
+            "kind": "MongoDB",
+            "properties": {
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Eventual",
+                    "maxStalenessPrefix": 1,
+                    "maxIntervalInSeconds": 5
+                },
+                "locations": [
+                    {
+                        "locationName": "North Europe",
+                        "failoverPriority": 0,
+                        "id": "[concat(parameters('cosmosAccountName'), '-', parameters('dbLocation'))]"
+
+                    }
+                ],
+                "databaseAccountOfferType": "Standard",
+                "enableFreeTier": true,
+                "enableAutomaticFailover": false,
+                "capabilities": [
+                    {
+                        "name": "EnableMongo"
+                    },
+                    {
+                        "name": "DisableRateLimitingResponses"
+                    },
+                    {
+                        "name": "EnableServerless"
+                    }
+                ],
+                "capacity": {
+                    "totalThroughputLimit": 1000
+                }
+            },
+            "resources": [
+                {
+                    "type": "mongodbDatabases",
+                    "apiVersion": "2021-10-15",
+                    "name": "sentiment",
+                    "location": "[parameters('dbLocation')]",
+                    "properties": {
+                        "resource": {
+                            "id": "sentiment"
+                        }
+                    },
+                    "dependsOn": [ "[parameters('cosmosAccountName')]" ],
+                    "resources": [
+                        {
+                            "type": "collections",
+                            "apiVersion": "2021-10-15",
+                            "name": "records",
+                            "location": "[parameters('dbLocation')]",
+                            "properties": {
+                                "resource": {
+                                    "id": "records",
+                                    "shardKey": {
+                                        "_id": "Hash"
+                                    },
+                                    "indexes": [
+                                        {
+                                            "key": {
+                                                "keys": [
+                                                    "_id"
+                                                ]
+                                            },
+                                            "options": {
+                                                "expireAfterSeconds": 300,
+                                                "unique": true
+                                            }
+
+                                        }
+                                    ]
+                                },
+                                "options": {
+
+                                }
+                            },
+                            "dependsOn": [ "sentiment" ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2021-10-01",
+            "name": "[parameters('cognitiveServicesAccountName')]",
+            "location": "westeurope",
+            "sku": {
+                "name": "F0"
+            },
+            "kind": "TextAnalytics",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "apiProperties": {},
+                "customSubDomainName": "[parameters('cognitiveServicesAccountName')]",
+                "networkAcls": {
+                    "defaultAction": "Allow",
+                    "virtualNetworkRules": [],
+                    "ipRules": []
+                },
+                "publicNetworkAccess": "Enabled"
+            }
         }
     ],
     "outputs": {
@@ -113,6 +244,18 @@
         "storageContainerUrlDev": {
             "type": "string",
             "value": "[concat('https://',parameters('storageAccountName'),'.blob.core.windows.net',parameters('devTemplateContainer'),'/')]"
+        },
+        "cosmosConnectionString": {
+            "type": "string",
+            "value": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosAccountName')), '2021-10-15').connectionStrings[0].connectionString]"
+        },
+        "cognitiveServicesEndpoint": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('cognitiveServicesAccountName')), '2021-10-01').endpoint]"
+        },
+        "cognitiveServicesKey": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('cognitiveServicesAccountName')),'2021-10-01').key1]"
         }
     }
 }

@@ -12,6 +12,11 @@ const register = (app) => {
   apimRoutes.get('/test', async () => {
     stripeService.reportUsage();
   });
+
+  apimRoutes.get('/', async (req, res) => {
+    res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL);
+  });
+
   apimRoutes.post('/signup', async (req, res) => {
     const { email } = req.body;
     const { password } = req.body;
@@ -59,7 +64,6 @@ const register = (app) => {
     if (!identity || !identity.authenticated) {
       const redirectParams = new URLSearchParams(returnUrl.split('?')[1]);
       redirectParams.set('errorMessage', identity.message);
-      console.log(identity.message);
       res.redirect(`/apim-delegation?${redirectParams.toString()}`);
       return;
     }
@@ -91,6 +95,7 @@ const register = (app) => {
     if (identity.authenticated) {
       await apim.closeAccount(identity.id);
     }
+    res.clearCookie('auth');
 
     res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL);
   });
@@ -125,24 +130,33 @@ const register = (app) => {
   apimRoutes.get('/apim-delegation', async (req, res) => {
     const { operation } = req.query;
     const { errorMessage } = req.query;
-    const returnUrl = req._parsedOriginalUrl.path || '/';
+    const returnUrl = process.env.APIM_DEVELOPER_PORTAL_URL;
     const { userId } = req.query;
 
     switch (operation) {
       case 'Subscribe': {
         const { productName } = await apim.getProduct(req.query.productId);
-        res.render('pages/subscribe', { productId: req.query.productId, productName, userId: req.query.userId });
+        res.render('pages/subscribe', {
+          productId: req.query.productId, productName, userId: req.query.userId, returnUrl,
+        });
         break;
       }
-      case 'SignIn':
-        res.render('pages/signin', { returnUrl, errorMessage });
+      case 'SignIn': {
+        const returnUrlSignIn = req._parsedOriginalUrl.path || '/';
+        res.clearCookie('auth');
+        res.render('pages/signin', { returnHome: `${returnUrl}/#signout`, returnUrl: returnUrlSignIn, errorMessage });
         break;
-      case 'SignUp':
-        res.render('pages/signup', { returnUrl, errorMessage });
+      }
+      case 'SignUp': {
+        const returnUrlSignUp = req._parsedOriginalUrl.path || '/';
+        res.render('pages/signup', { returnHome: `${returnUrl}/#signout`, returnUrl: returnUrlSignUp, errorMessage });
         break;
-      case 'SignOut':
-        res.render('pages/index');
+      }
+      case 'SignOut': {
+        res.clearCookie('auth');
+        res.redirect(`${process.env.APIM_DEVELOPER_PORTAL_URL}/#signout`);
         break;
+      }
       case 'Unsubscribe':
         {
           const { subscriptionId } = req.query;
@@ -161,11 +175,12 @@ const register = (app) => {
             res.render('pages/unsubscribe-done', {
               subscriptionName: subscription.displayName,
               subscriptionId,
+              returnUrl:returnUrl
             });
           } else {
             res.render('pages/unsubscribe', {
               subscriptionName: subscription.displayName,
-              subscriptionId,
+              subscriptionId,returnUrl
             });
           }
 
@@ -173,7 +188,7 @@ const register = (app) => {
         }
         break;
       case 'CloseAccount':
-        res.render('pages/closeAccount', { errorMessage, userId });
+        res.render('pages/closeAccount', { errorMessage, userId, returnUrl: `${returnUrl}/#signout` });
         break;
       case 'ChangePassword':
         res.render('pages/changePassword', { errorMessage, userId, returnUrl });

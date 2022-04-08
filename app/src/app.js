@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const { CronJob } = require('cron');
+const cookieParser = require('cookie-parser');
 const routes = require('./routes/routes');
 const StripeService = require('./services/stripeService');
 
@@ -10,6 +11,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 app.use(expressLayouts);
 app.set('views', path.join(__dirname, 'views'));

@@ -19,6 +19,7 @@ class StripeService {
     const filter = `timestamp ge datetime'${lastUsageReportDate.toISOString()
     }' and timestamp le datetime'${currentTime.toISOString()}' and subscriptionId eq '${subscriptionId}'`;
 
+    await this.apim.init();
     const report = await this.apim.apimClient.reports.listBySubscription(
       this.apim.resourceGroupName,
       this.apim.serviceName,
@@ -27,8 +28,6 @@ class StripeService {
 
     const callTotal = (await report.next()).value.callCountTotal;
     const usageUnits = Math.floor(callTotal / 100);
-
-    console.log(callTotal, usageUnits);
 
     if (usageUnits !== 0) {
       await stripe.subscriptionItems.createUsageRecord(

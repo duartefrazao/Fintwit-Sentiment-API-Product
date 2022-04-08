@@ -60,7 +60,6 @@ const register = (app) => {
         process.env.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
-      console.log(err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
@@ -68,24 +67,21 @@ const register = (app) => {
     switch (event.type) {
       case 'customer.subscription.created': {
         const createdSubscription = event.data.object;
-        // console.log(createdSubscription)
         const { userId } = createdSubscription.metadata;
         const { subscriptionName } = createdSubscription.metadata;
         const { productName } = createdSubscription.metadata;
 
-        const newSubscription = await apim.createSubscription(
+        await apim.createSubscription(
           createdSubscription.id,
           userId,
           subscriptionName,
           productName,
         );
-        console.log(newSubscription);
         break;
       }
 
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        console.log();
         const subscriptionToChange = event.data.object;
 
         const { status } = subscriptionToChange;
@@ -98,7 +94,7 @@ const register = (app) => {
       }
 
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`Unhandled stripe event type ${event.type}`);
     }
 
     // Return a 200 response to acknowledge receipt of the event

@@ -1,11 +1,11 @@
-<h1>Unsubscribe from <%= subscriptionName %></h1>
+<h1 class="title">Unsubscribe from <%= subscriptionName %></h1>
 <p>You already cancelled this subscription. </p>
 <p>When the billing period ends you will not be billed and will lose access to the subscription. </p>
 <p>You can renew subscription to cancel the termination.</p>
 <div id="form-option">
-    <form action="/profile" method="get">
-        <button type="submit" class="btn btn-light">Return</button>
-    </form>
+    <a href="<%= returnUrl %>" >
+        <button type="button" class="btn btn-light">Home</button>
+    </a>
     <form action="/cancel-unsubscribe" method="post">
         <button type="submit" class="btn btn-primary">Renew subscription</button>
         <input type="hidden" name="subscriptionId" value="<%= subscriptionId %>"/>

@@ -1,4 +1,4 @@
-<h1>Delete Account</h1> 
+<h1 class="title">Delete Account</h1> 
 
 <p>This action is irreversible and will delete any subscriptions currently active.</p>
 
@@ -11,6 +11,9 @@
         <label for="password">Password</label>
         <input type="password" required class="form-control" name="password" >
     </div>
+    <a href="<%= returnUrl %>" >
+      <button type="button" class="btn btn-light">Home</button>
+    </a>
     <button type="submit" class="btn btn-primary">Delete account</button>
     <input type="hidden" name="userId" value="<%= userId %>"/>
   </form>
