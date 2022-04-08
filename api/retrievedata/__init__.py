@@ -1,4 +1,5 @@
 from importlib.resources import path
+import logging
 import azure.functions as func
 import os
 import tweepy
@@ -9,10 +10,10 @@ import pymongo
 import math
 import json
 
-MAX_NUM_TWEETS = 10  # 20
-MAX_NUM_REPLIES = 10  # 100
-MAX_ANALYSED_TWEETS = 2 #5
-MAX_ANALYSED_REPLIES = 2 #3
+MAX_NUM_TWEETS =20
+MAX_NUM_REPLIES =  100
+MAX_ANALYSED_TWEETS =5
+MAX_ANALYSED_REPLIES =3
 
 allowedTickers = set(json.load(open('retrievedata/tickers.json'))["tickers"])
 endpoint = os.environ['cognitiveServicesEndpoint']
@@ -20,16 +21,16 @@ key = os.environ['cognitiveServicesKey']
 text_analytics_client = TextAnalyticsClient(
     endpoint=endpoint, credential=AzureKeyCredential(key))
 client = tweepy.Client(bearer_token= os.environ['twitterToken'])
-NUM_DAYS = 4
+NUM_DAYS = 1
 
 
 def getIntervals(days):
     today = date.today()
     fromDate = (today-timedelta(days=days))
     toDate = (today-timedelta(days=days-1))
-
-    startTime = datetime.combine(fromDate, time())
-    endTime = datetime.combine(toDate, time())
+    
+    startTime = datetime.combine(fromDate, time(1,30))
+    endTime = datetime.combine(toDate, time(1,30))
 
     return startTime, endTime
 
@@ -175,7 +176,6 @@ def processTweet(info,infoAccount, tweet,tweetIndex, account):
 def sample_analyze_sentiment():
     accounts = ['optionsgeneral', 'MacroAlf', 'markminervini', 'realMeetKevin', 'BigBullCap',
                 'Mayhem4Markets', 'gurgavin', 'cperruna', 'LiviamCapital', 'saxena_puru', 'JonahLupton']
-    accounts = ['Mayhem4Markets', 'gurgavin']
 
     today = date.today()
     recordDate = str(today-timedelta(days=NUM_DAYS))
@@ -229,7 +229,7 @@ def cosmos(info):
     connectionString = os.environ['cosmosConnectionString']
     client = pymongo.MongoClient(connectionString)
     records = client.sentiment.records
-    records.delete_many({"date":info["date"]})
+    records.delete_many({"date":info["date"]}) 
     records.insert_one(info)
 
 

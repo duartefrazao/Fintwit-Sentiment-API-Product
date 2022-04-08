@@ -150,6 +150,7 @@
                 "reserved": true,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]",
                 "siteConfig": {
+                    "alwaysOn": true,
                     "linuxFxVersion": "python|3.8",
                     "appSettings": [
                         {
@@ -192,6 +193,7 @@
         {
             "name": "[parameters('appName')]",
             "type": "Microsoft.Web/sites",
+            "kind": "app,linux,container",
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
             "tags": {
@@ -206,7 +208,17 @@
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]",
                 "siteConfig": {
                     "linuxFxVersion": "[concat('DOCKER|','duartefrazao/apim-test:latest')]",
-                    "alwaysOn": true
+                    "alwaysOn": true,
+                    "appSettings": [
+                        {
+                        "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                        "value": "false"
+                        },
+                        {
+                        "name": "DOCKER_REGISTRY_SERVER_URL",
+                        "value": "https://docker.io"
+                        }
+                    ]
 
                 }
             },

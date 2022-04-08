@@ -1,13 +1,17 @@
-<h1>Sign In</h1>
+<h1 class="title">Sign In</h1>
+
 <form action="/signin" method="post">
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" class="form-control" name="email" aria-describedby="email" >
+        <input type="email" required class="form-control" name="email" aria-describedby="email" >
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" name="password" >
+        <input type="password" required class="form-control" name="password" >
     </div>
+    <a href="<%= returnHome %>" >
+        <button type="button" class="btn btn-light">Home</button>
+    </a>
     <button type="submit" class="btn btn-primary">Sign In</button>
     <input type="hidden" name="returnUrl" value="<%= returnUrl %>"/>
 </form>

@@ -7,9 +7,6 @@ import json
 from datetime import date
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    #TODO REMOVE
-    allowedTickers = set(json.load(open('retrievedata/tickers.json'))["tickers"])
-
 
     client = MongoClient(os.environ['cosmosConnectionString'])
     records = client.sentiment.records
@@ -24,5 +21,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     if not document:
         return func.HttpResponse(json.dumps({"msg":"No record for the specified date."}),status_code=201)
     
-    sentiment = round(document['sentiment'],2)
+    sentiment = round(document['sentiment']/document['sentimentCount'],2)
     return func.HttpResponse(json.dumps({"sentiment":sentiment}), status_code=200) 

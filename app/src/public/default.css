@@ -25,3 +25,9 @@
 #form-option form{
     margin-right: 1em;
 }
+
+.title{
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-weight: 500;
+}

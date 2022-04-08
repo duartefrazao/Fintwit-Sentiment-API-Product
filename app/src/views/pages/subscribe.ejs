@@ -1,9 +1,12 @@
-<h1>Subscription to <%= productName %></h1>
+<h1 class="title">Subscription to <%= productName %></h1>
 <form action="/checkout" method="get">
     <div class="form-group">
         <label for="subscriptionName">Subscription Name</label>
         <input type="text" required class="form-control" name="subscriptionName" >
     </div>
+    <a href="<%= returnUrl %>" >
+        <button type="button" class="btn btn-light">Home</button>
+    </a>
     <button type="submit" class="btn btn-primary">Subscribe API</button>
     <input type="hidden" name="productId" value="<%= productId %>"/>
     <input type="hidden" name="userId" value="<%= userId %>"/>

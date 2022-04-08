@@ -1,9 +1,9 @@
 app/node_modules
 app/.env
 deployment/main.parameters.json
-deployment/main.parameters.json.bak
-deployment/appservice.parameters.json.bak
-deployment/apim.parameters.json.bak
+deployment/main.parameters.json
+deployment/appservice.parameters.json
+deployment/apim.parameters.json
 *.sh
 .vscode
 *.zip

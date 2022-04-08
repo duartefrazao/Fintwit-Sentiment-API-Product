@@ -1,21 +1,24 @@
-<h1>Sign Up</h1>
+<h1 class="title">Sign Up</h1>
 <form action="/signup" method="post">
     <div class="form-group">
         <label for="name">First Name</label>
-        <input type="text" class="form-control"  name="firstName" aria-describedby="firstName" >
+        <input type="text" required class="form-control"  name="firstName" aria-describedby="firstName" >
     </div>
     <div class="form-group">
         <label for="surname">Last Name</label>
-        <input type="text" class="form-control"  name="surname" aria-describedby="surname" >
+        <input type="text" required class="form-control"  name="surname" aria-describedby="surname" >
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" class="form-control" name="email" aria-describedby="email" >
+        <input type="email" required class="form-control" name="email" aria-describedby="email" >
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" name="password" >
+        <input type="password" required class="form-control" name="password" >
     </div>
+    <a href="<%= returnHome %>" >
+        <button type="button" class="btn btn-light">Home</button>
+    </a>
     <button type="submit" class="btn btn-primary">Sign Up</button>
     <input type="hidden" name="returnUrl" value="<%= returnUrl %>"/>
 </form>

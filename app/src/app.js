@@ -5,11 +5,14 @@ const expressLayouts = require('express-ejs-layouts');
 const { CronJob } = require('cron');
 const routes = require('./routes/routes');
 const StripeService = require('./services/stripeService');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 app.use(expressLayouts);
 app.set('views', path.join(__dirname, 'views'));

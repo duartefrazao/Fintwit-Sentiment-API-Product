@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - "main"
-      - "dev"
 
 name: IAC for production
 jobs:
@@ -88,8 +87,3 @@ jobs:
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./deployment/main.json
         parameters: storageContainerUrl=${{ secrets.STORAGE_CONTAINER_URL }} storageSAS=${{ secrets.STORAGE_SAS }}
-    
-    - name: Deploy Azure Functions
-      run: |
-        sh deployment/updateFunctions.sh
-        

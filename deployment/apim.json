@@ -113,7 +113,7 @@
                         },
                         "validationKey": "[base64(parameters('validationKey'))]"
                     },
-                    "dependsOn": [ "[parameters('apimServiceName')]" ]
+                    "dependsOn": [ "[parameters('apimServiceName')]"]
                 },
                 {
                     "type": "policies",
@@ -136,10 +136,18 @@
                         "displayName": "Pay as you go",
                         "state": "published",
                         "subscriptionRequired": true,
-                        "terms": "Terms of usage TODO"
+                        "terms": "By subscribing you agree to the recurrent billing on your account."
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ],
                     "resources": [
+                        {
+                            "type": "apis",
+                            "apiVersion": "2021-08-01",
+                            "name": "Sentiment",
+                            "dependsOn": [
+                                "payg"
+                            ]
+                        },
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
@@ -183,11 +191,19 @@
                         "displayName": "Free",
                         "state": "notPublished",
                         "subscriptionRequired": true,
-                        "terms": "Terms of usage TODO",
+                        "terms": "By subscribing you agree to the recurrent billing on your account.",
                         "subscriptionsLimit": 1
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ],
                     "resources": [
+                        {
+                            "type": "apis",
+                            "apiVersion": "2021-08-01",
+                            "name": "Sentiment",
+                            "dependsOn": [
+                                "free"
+                            ]
+                        },
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
@@ -231,10 +247,18 @@
                         "displayName": "Basic Monthly",
                         "state": "published",
                         "subscriptionRequired": true,
-                        "terms": "Terms of usage TODO"
+                        "terms": "By subscribing you agree to the recurrent billing on your account."
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ],
                     "resources": [
+                        {
+                            "type": "apis",
+                            "apiVersion": "2021-08-01",
+                            "name": "Sentiment",
+                            "dependsOn": [
+                                "monthly"
+                            ]
+                        },
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",
@@ -278,10 +302,18 @@
                         "displayName": "Basic Yearly",
                         "state": "published",
                         "subscriptionRequired": true,
-                        "terms": "Terms of usage TODO"
+                        "terms": "By subscribing you agree to the recurrent billing on your account."
                     },
                     "dependsOn": [ "[parameters('apimServiceName')]" ],
                     "resources": [
+                        {
+                            "type": "apis",
+                            "apiVersion": "2021-08-01",
+                            "name": "Sentiment",
+                            "dependsOn": [
+                                "yearly"
+                            ]
+                        },
                         {
                             "type": "groups",
                             "apiVersion": "2021-08-01",

@@ -48,7 +48,6 @@ class ApimService {
     try {
       request = this.createRequest(email, password);
     } catch (error) {
-      console.log(request);
     }
 
     const url = `${request.resourceUrl}/identity?api-version=2019-12-01`;
