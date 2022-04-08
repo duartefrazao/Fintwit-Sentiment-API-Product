@@ -19,7 +19,7 @@ class StripeService {
     const filter = `timestamp ge datetime'${lastUsageReportDate.toISOString()
     }' and timestamp le datetime'${currentTime.toISOString()}' and subscriptionId eq '${subscriptionId}'`;
 
-    await this.apim.init()
+    await this.apim.init();
     const report = await this.apim.apimClient.reports.listBySubscription(
       this.apim.resourceGroupName,
       this.apim.serviceName,
@@ -45,7 +45,7 @@ class StripeService {
 
   async reportUsage() {
     await this.apim.init();
-    
+
     const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
     const priceId = (await stripe.prices.list({ active: true, product: 'payg' })).data[0].id;

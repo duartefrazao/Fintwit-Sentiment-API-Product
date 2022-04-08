@@ -71,7 +71,7 @@ const register = (app) => {
         const { subscriptionName } = createdSubscription.metadata;
         const { productName } = createdSubscription.metadata;
 
-        const newSubscription = await apim.createSubscription(
+        await apim.createSubscription(
           createdSubscription.id,
           userId,
           subscriptionName,

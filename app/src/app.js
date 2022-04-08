@@ -3,9 +3,9 @@ const dotenv = require('dotenv');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const { CronJob } = require('cron');
+const cookieParser = require('cookie-parser');
 const routes = require('./routes/routes');
 const StripeService = require('./services/stripeService');
-const cookieParser = require('cookie-parser');
 
 dotenv.config();
 

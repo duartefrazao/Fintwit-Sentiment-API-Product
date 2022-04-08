@@ -14,8 +14,8 @@ const register = (app) => {
   });
 
   apimRoutes.get('/', async (req, res) => {
-    res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL)
-  })
+    res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL);
+  });
 
   apimRoutes.post('/signup', async (req, res) => {
     const { email } = req.body;
@@ -58,7 +58,7 @@ const register = (app) => {
     const { returnUrl } = req.body;
     const { email } = req.body;
     const { password } = req.body;
-    
+
     const identity = await apim.signin(email, password);
 
     if (!identity || !identity.authenticated) {
@@ -136,22 +136,27 @@ const register = (app) => {
     switch (operation) {
       case 'Subscribe': {
         const { productName } = await apim.getProduct(req.query.productId);
-        res.render('pages/subscribe', { productId: req.query.productId, productName, userId: req.query.userId,returnUrl });
+        res.render('pages/subscribe', {
+          productId: req.query.productId, productName, userId: req.query.userId, returnUrl,
+        });
         break;
       }
-      case 'SignIn':
-        returnUrlSignIn = req._parsedOriginalUrl.path || '/'
+      case 'SignIn': {
+        const returnUrlSignIn = req._parsedOriginalUrl.path || '/';
         res.clearCookie('auth');
-        res.render('pages/signin', { returnHome:returnUrl+ '/#signout', returnUrl:returnUrlSignIn, errorMessage });
+        res.render('pages/signin', { returnHome: `${returnUrl}/#signout`, returnUrl: returnUrlSignIn, errorMessage });
         break;
-      case 'SignUp':
-        returnUrlSignUp = req._parsedOriginalUrl.path || '/'
-        res.render('pages/signup', { returnHome:returnUrl+ '/#signout', returnUrl:returnUrlSignUp, errorMessage });
+      }
+      case 'SignUp': {
+        const returnUrlSignUp = req._parsedOriginalUrl.path || '/';
+        res.render('pages/signup', { returnHome: `${returnUrl}/#signout`, returnUrl: returnUrlSignUp, errorMessage });
         break;
-      case 'SignOut':
+      }
+      case 'SignOut': {
         res.clearCookie('auth');
-        res.redirect(process.env.APIM_DEVELOPER_PORTAL_URL+ "/#signout")
+        res.redirect(`${process.env.APIM_DEVELOPER_PORTAL_URL}/#signout`);
         break;
+      }
       case 'Unsubscribe':
         {
           const { subscriptionId } = req.query;
@@ -183,7 +188,7 @@ const register = (app) => {
         }
         break;
       case 'CloseAccount':
-        res.render('pages/closeAccount', { errorMessage, userId,returnUrl: returnUrl + '/#signout' });
+        res.render('pages/closeAccount', { errorMessage, userId, returnUrl: `${returnUrl}/#signout` });
         break;
       case 'ChangePassword':
         res.render('pages/changePassword', { errorMessage, userId, returnUrl });
